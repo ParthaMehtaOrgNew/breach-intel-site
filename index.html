@@ -871,7 +871,9 @@ response = openai.chat.completions.<span class="func">create</span>(
 <section class="cta-section" id="get-started">
   <h2>Start logging breaches today</h2>
   <p>Get early access to Breach Intel. Deploy in minutes. No code changes.</p>
-  <form class="waitlist-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+  <form class="waitlist-form" name="waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="waitlist">
+    <p style="display:none"><input name="bot-field"></p>
     <input type="email" name="email" placeholder="your@email.com" required>
     <button type="submit" class="btn btn-primary">Join Waitlist</button>
   </form>
