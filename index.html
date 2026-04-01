@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breach Intel — The Audit Layer for AI Agents</title>
+  <meta name="description" content="Attach to any AI agent. Log every compliance breach. Immutably. Zero code changes.">
+  <meta property="og:title" content="Breach Intel — The Audit Layer for AI Agents">
+  <meta property="og:description" content="Policy agent infrastructure that attaches to any AI agent and produces tamper-evident breach audit logs — automatically.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <style>
+    :root {
+      --bg: #0a0e17;
+      --bg-card: #111827;
+      --bg-card-hover: #1a2332;
+      --border: #1e293b;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.15);
+      --red: #ef4444;
+      --orange: #f97316;
+      --yellow: #eab308;
+      --green: #22c55e;
+      --purple: #a855f7;
+      --cyan: #06b6d4;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 0;
+    }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; align-items: center; }
+    .nav-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      background: #2563eb;
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 10rem 2rem 6rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+    }
+    .hero-badge .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--accent), var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      color: var(--text-dim);
+      max-width: 650px;
+      margin: 0 auto 2.5rem;
+      position: relative;
+    }
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    /* ── Sections ── */
+    section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .section-desc {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 600px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── Problem ── */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .problem-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: all 0.2s;
+    }
+    .problem-card:hover {
+      border-color: var(--accent);
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+    .problem-card .icon {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .problem-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    .problem-card p {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    /* ── How it Works ── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .step {
+      text-align: center;
+      position: relative;
+    }
+    .step-number {
+      width: 48px;
+      height: 48px;
+      background: var(--accent-glow);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent);
+      margin: 0 auto 1.25rem;
+    }
+    .step h3 { margin-bottom: 0.5rem; font-size: 1.1rem; }
+    .step p { color: var(--text-dim); font-size: 0.9rem; }
+    .step code {
+      display: inline-block;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.85rem;
+      color: var(--cyan);
+      margin-top: 0.75rem;
+    }
+
+    /* ── Architecture ── */
+    .arch-container {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem;
+      overflow-x: auto;
+    }
+    .arch-diagram {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: var(--text-dim);
+      white-space: pre;
+    }
+    .arch-diagram .highlight { color: var(--accent); font-weight: 600; }
+    .arch-diagram .breach { color: var(--red); font-weight: 600; }
+    .arch-diagram .ok { color: var(--green); }
+
+    /* ── Dashboard Preview ── */
+    .dashboard-preview {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    }
+    .dashboard-preview .browser-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: #1a1f2e;
+      border-bottom: 1px solid var(--border);
+    }
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .browser-dot.r { background: #ef4444; }
+    .browser-dot.y { background: #eab308; }
+    .browser-dot.g { background: #22c55e; }
+    .browser-url {
+      flex: 1;
+      margin-left: 0.75rem;
+      background: var(--bg);
+      border-radius: 6px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .dashboard-preview img {
+      width: 100%;
+      display: block;
+    }
+    .dashboard-placeholder {
+      padding: 4rem 2rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    /* ── Verticals ── */
+    .verticals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .vertical-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: all 0.2s;
+    }
+    .vertical-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .vertical-card .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .vertical-card .badge.live { background: rgba(34, 197, 94, 0.15); color: var(--green); }
+    .vertical-card .badge.beta { background: rgba(59, 130, 246, 0.15); color: var(--accent); }
+    .vertical-card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .vertical-card .count {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .vertical-card .count-label {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-bottom: 1rem;
+    }
+    .vertical-card .regs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 1rem;
+    }
+    .vertical-card .reg-tag {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.5rem;
+      background: rgba(148, 163, 184, 0.1);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-dim);
+    }
+
+    /* ── Breach Types ── */
+    .breach-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+    .breach-type {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+    .breach-type .severity {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .breach-type .severity.critical { background: var(--red); }
+    .breach-type .severity.high { background: var(--orange); }
+    .breach-type .severity.medium { background: var(--yellow); }
+
+    /* ── Features ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+    }
+    .feature-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .feature-card p {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    /* ── Code Block ── */
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 2rem;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: #1a1f2e;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+    .code-body {
+      padding: 1.5rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+    .code-body .comment { color: #6b7280; }
+    .code-body .keyword { color: var(--purple); }
+    .code-body .string { color: var(--green); }
+    .code-body .func { color: var(--cyan); }
+
+    /* ── CTA Section ── */
+    .cta-section {
+      text-align: center;
+      padding: 6rem 2rem;
+      position: relative;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-section h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .cta-section p {
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Waitlist Form ── */
+    .waitlist-form {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 450px;
+      margin: 0 auto;
+    }
+    .waitlist-form input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .waitlist-form input:focus { border-color: var(--accent); }
+    .waitlist-form input::placeholder { color: var(--text-dim); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      margin: 4rem 0 0;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat .number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .stat .label {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .steps { grid-template-columns: 1fr; }
+      .verticals-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .stats-row { gap: 2rem; }
+      .waitlist-form { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-brand">🛡️ Breach <span>Intel</span></a>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#verticals">Verticals</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#features">Features</a>
+      <a href="#get-started" class="btn btn-primary" style="padding: 0.5rem 1.25rem;">Get Early Access</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge">
+    <div class="dot"></div>
+    Now monitoring AI agents in production
+  </div>
+  <h1>
+    The audit layer for<br>
+    <span class="gradient">AI agents</span>
+  </h1>
+  <p>
+    Attach to any AI agent. Log every compliance breach. Immutably.
+    Zero code changes. Works with OpenAI, Anthropic, and LangChain out of the box.
+  </p>
+  <div class="hero-cta">
+    <a href="#get-started" class="btn btn-primary">Request Early Access</a>
+    <a href="#how-it-works" class="btn btn-outline">See How It Works</a>
+  </div>
+  <div class="stats-row">
+    <div class="stat">
+      <div class="number">40+</div>
+      <div class="label">Breach types detected</div>
+    </div>
+    <div class="stat">
+      <div class="number">3</div>
+      <div class="label">Verticals supported</div>
+    </div>
+    <div class="stat">
+      <div class="number">&lt;1ms</div>
+      <div class="label">Classification latency</div>
+    </div>
+    <div class="stat">
+      <div class="number">0</div>
+      <div class="label">Lines of code to change</div>
+    </div>
+  </div>
+</div>
+
+<!-- Problem -->
+<section>
+  <div class="section-label">The Problem</div>
+  <h2 class="section-title">Nobody's logging what AI agents actually do</h2>
+  <p class="section-desc">
+    AI agents are reading sensitive data, calling external APIs, and generating responses with PII, card numbers, and hallucinated figures. Compliance teams are about to ask: "What did your agent do?" Without Breach Intel, the answer is: "We don't know."
+  </p>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <div class="icon">🔓</div>
+      <h3>PII leaking in responses</h3>
+      <p>SSNs, Aadhaar numbers, card data appearing in LLM outputs. No one's catching it until it's too late.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">🤖</div>
+      <h3>Agents going out of scope</h3>
+      <p>Calling tools they weren't authorized to use. Initiating transactions without approval. Scope creep is invisible.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">📋</div>
+      <h3>No audit trail</h3>
+      <p>Regulators (PCI-DSS, HIPAA, FDA 21-CFR) require immutable logs. Most AI deployments have nothing.</p>
+    </div>
+    <div class="problem-card">
+      <div class="icon">🏥</div>
+      <h3>Cross-vertical risk</h3>
+      <p>Healthcare agents leaking PHI. Pharma agents exposing trial data. Fintech agents hallucinating balances. Same problem, different regulations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section id="how-it-works">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">Install once. Every agent is monitored.</h2>
+  <p class="section-desc">
+    Breach Intel is a policy agent sidecar. It hooks into your Python runtime at import time and silently intercepts every LLM call. No decorators, no imports, no code changes.
+  </p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-number">1</div>
+      <h3>Install</h3>
+      <p>One command. Starts the policy agent, installs the SDK, configures credentials.</p>
+      <code>./install.sh</code>
+    </div>
+    <div class="step">
+      <div class="step-number">2</div>
+      <h3>Run your agents</h3>
+      <p>No changes needed. Every Python agent on the machine is auto-monitored.</p>
+      <code>python your_agent.py</code>
+    </div>
+    <div class="step">
+      <div class="step-number">3</div>
+      <h3>See breaches</h3>
+      <p>Real-time dashboard. Immutable logs. Alerts on critical breaches.</p>
+      <code>breach-intel doctor</code>
+    </div>
+  </div>
+
+  <!-- Architecture -->
+  <div class="arch-container" style="margin-top: 3rem;">
+    <div class="arch-diagram"><span class="highlight">Your AI Agent</span> (OpenAI / Anthropic / LangChain)
+       |
+       | <span class="ok">Auto-patched at import time (zero code changes)</span>
+       v
+┌──────────────────────────────────────────────────────┐
+│                    <span class="highlight">Policy Agent</span>                      │
+│                                                      │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐  │
+│  │  <span class="highlight">Classifier</span>  │  │   Agentic    │  │   Auto-   │  │
+│  │ (rule-based) │──│  Analyzer    │  │  Spawner  │  │
+│  │   <span class="ok">&lt;1ms</span>       │  │ (LangGraph)  │  │ (Docker)  │  │
+│  └──────┬───────┘  └──────┬───────┘  └───────────┘  │
+│         │ <span class="breach">breach?</span>          │ async deep analysis     │
+│         v                  v                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐  │
+│  │ <span class="breach">Breach Logger</span>│  │  Enriched    │  │  Webhook  │  │
+│  │ DB + JSONL   │  │  Analysis    │  │  Alert    │  │
+│  │ + Checksum   │  │  (intent,    │  │  (Slack)  │  │
+│  └──────────────┘  │  severity)   │  └───────────┘  │
+│                    └──────────────┘                  │
+└──────────────────────────────────────────────────────┘
+       |
+       v
+  <span class="highlight">PostgreSQL</span> + <span class="highlight">breach_logs/*.jsonl</span> (tamper-evident, append-only)</div>
+  </div>
+</section>
+
+<!-- Zero Touch Code -->
+<section>
+  <div class="section-label">Zero-Touch Instrumentation</div>
+  <h2 class="section-title">Your code stays exactly the same</h2>
+  <p class="section-desc">
+    When your agent makes an LLM call, Breach Intel silently intercepts the response, classifies it in under 1ms, and logs any breaches. Your agent never knows it's being monitored.
+  </p>
+  <div class="code-block">
+    <div class="code-header">your_agent.py — no changes needed</div>
+    <div class="code-body">
+<span class="comment"># This is your existing code. Unchanged. Untouched.</span>
+<span class="keyword">import</span> openai
+
+response = openai.chat.completions.<span class="func">create</span>(
+    model=<span class="string">"gpt-4"</span>,
+    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"Look up customer account"</span>}]
+)
+
+<span class="func">print</span>(response.choices[0].message.content)
+<span class="comment"># ^ If this contains an SSN, Breach Intel already logged it.</span>
+<span class="comment">#   Your agent kept running. Zero overhead. Zero friction.</span>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard Preview -->
+<section id="dashboard">
+  <div class="section-label">Real-Time Dashboard</div>
+  <h2 class="section-title">See every breach as it happens</h2>
+  <p class="section-desc">
+    Severity breakdown, agent heatmaps, breach type distribution, live feed with full payload inspection, and tamper verification — all in one view.
+  </p>
+  <div class="dashboard-preview">
+    <div class="browser-bar">
+      <div class="browser-dot r"></div>
+      <div class="browser-dot y"></div>
+      <div class="browser-dot g"></div>
+      <div class="browser-url">localhost:8080/dashboard/</div>
+    </div>
+    <!-- Replace this with your actual dashboard screenshot -->
+    <div class="dashboard-placeholder" id="dashboard-screenshot">
+      <img src="dashboard-screenshot.png" alt="Breach Intel Dashboard showing 21 breaches across 5 agents, 14 breach types, with live feed and vertical distribution" style="width:100%; display:block;" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=\'padding:4rem 2rem; text-align:center; color:#94a3b8;\'>📸 Dashboard screenshot — drop your screenshot as <strong>dashboard-screenshot.png</strong> in this directory</div>'">
+    </div>
+  </div>
+</section>
+
+<!-- Verticals -->
+<section id="verticals">
+  <div class="section-label">Verticals</div>
+  <h2 class="section-title">Purpose-built for regulated industries</h2>
+  <p class="section-desc">
+    Each vertical has its own breach taxonomy, detection rules, and regulatory mapping. Switch verticals per-event — no server restart needed.
+  </p>
+  <div class="verticals-grid">
+    <div class="vertical-card">
+      <div class="badge live">Live</div>
+      <h3>Fintech</h3>
+      <div class="count">12</div>
+      <div class="count-label">breach types</div>
+      <p style="color: var(--text-dim); font-size: 0.85rem;">PII exposure, card data, suspicious transactions, scope creep, cross-tenant leaks, hallucinated financials, and more.</p>
+      <div class="regs">
+        <span class="reg-tag">PCI-DSS</span>
+        <span class="reg-tag">GDPR</span>
+        <span class="reg-tag">SOX</span>
+        <span class="reg-tag">SEBI</span>
+        <span class="reg-tag">RBI</span>
+        <span class="reg-tag">DPDP</span>
+      </div>
+    </div>
+    <div class="vertical-card">
+      <div class="badge beta">Beta</div>
+      <h3>Healthcare</h3>
+      <div class="count">14</div>
+      <div class="count-label">breach types</div>
+      <p style="color: var(--text-dim); font-size: 0.85rem;">PHI exposure, HIV/mental health disclosure, unauthorized prescriptions, genomic data, clinical note leaks, minors data.</p>
+      <div class="regs">
+        <span class="reg-tag">HIPAA</span>
+        <span class="reg-tag">42-CFR</span>
+        <span class="reg-tag">COPPA</span>
+        <span class="reg-tag">GINA</span>
+        <span class="reg-tag">GDPR</span>
+      </div>
+    </div>
+    <div class="vertical-card">
+      <div class="badge beta">Beta</div>
+      <h3>Pharma</h3>
+      <div class="count">14</div>
+      <div class="count-label">breach types</div>
+      <p style="color: var(--text-dim); font-size: 0.85rem;">Trial data fabrication, unblinding breaches, 21-CFR-11 violations, e-signature bypass, adverse event suppression, batch tampering.</p>
+      <div class="regs">
+        <span class="reg-tag">FDA 21-CFR</span>
+        <span class="reg-tag">ICH-E6</span>
+        <span class="reg-tag">EMA</span>
+        <span class="reg-tag">GMP</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Breach Types Sample -->
+<section>
+  <div class="section-label">Detection</div>
+  <h2 class="section-title">40+ breach types across all verticals</h2>
+  <p class="section-desc">Rule-based classification in under 1ms. No LLM needed for detection — deterministic, auditable, reproducible.</p>
+  <div class="breach-types">
+    <div class="breach-type"><div class="severity critical"></div>PII_EXPOSURE</div>
+    <div class="breach-type"><div class="severity critical"></div>CARD_DATA_EXPOSURE</div>
+    <div class="breach-type"><div class="severity critical"></div>PHI_EXPOSURE</div>
+    <div class="breach-type"><div class="severity critical"></div>SUSPICIOUS_TRANSACTION</div>
+    <div class="breach-type"><div class="severity critical"></div>DATA_EXFILTRATION</div>
+    <div class="breach-type"><div class="severity critical"></div>CROSS_TENANT_LEAK</div>
+    <div class="breach-type"><div class="severity critical"></div>UNBLINDING_BREACH</div>
+    <div class="breach-type"><div class="severity critical"></div>HIV_STATUS_DISCLOSURE</div>
+    <div class="breach-type"><div class="severity critical"></div>TRIAL_DATA_FABRICATION</div>
+    <div class="breach-type"><div class="severity critical"></div>BATCH_RECORD_TAMPERING</div>
+    <div class="breach-type"><div class="severity high"></div>PRIVILEGE_ESCALATION</div>
+    <div class="breach-type"><div class="severity high"></div>REGULATORY_VIOLATION</div>
+    <div class="breach-type"><div class="severity high"></div>HALLUCINATION_FINANCIAL</div>
+    <div class="breach-type"><div class="severity high"></div>UNAUTHORIZED_LABEL_CLAIM</div>
+    <div class="breach-type"><div class="severity medium"></div>SCOPE_CREEP</div>
+    <div class="breach-type"><div class="severity medium"></div>UNAPPROVED_EXTERNAL_CALL</div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Built for production</h2>
+  <div class="features-grid" style="margin-top: 2rem;">
+    <div class="feature-card">
+      <h3>🔌 Zero-Touch Install</h3>
+      <p>One command installs everything. Asks permission before enabling auto-monitoring. Hooks into OpenAI, Anthropic, and LangChain at import time.</p>
+    </div>
+    <div class="feature-card">
+      <h3>⚡ Sub-Millisecond Classification</h3>
+      <p>Rule-based, deterministic classification. No LLM call needed for detection. Regex + keyword + scope analysis in under 1ms.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🧠 Agentic Deep Analysis</h3>
+      <p>Optional LangGraph pipeline: intent classification, severity assessment, pattern correlation, remediation suggestions — powered by Claude.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🔒 Tamper-Evident Logs</h3>
+      <p>Every breach record has a SHA-256 chain hash. Append-only DB + JSONL dual-write. Integrity verification via API or CLI.</p>
+    </div>
+    <div class="feature-card">
+      <h3>📊 Real-Time Dashboard</h3>
+      <p>Agent heatmaps, breach type breakdown, live feed, vertical distribution, full payload inspection with integrity verification.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🚀 Auto-Scaling</h3>
+      <p>When event volume spikes, the policy agent spawns additional Docker instances automatically. Scales down when load drops.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🔔 Webhook Alerts</h3>
+      <p>Critical breaches trigger Slack, Discord, or generic webhook notifications instantly. Configure per-severity thresholds.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🛠️ CLI + SDK</h3>
+      <p><code>breach-intel doctor</code> diagnoses your setup. Full Python SDK for manual instrumentation when you need fine-grained control.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="get-started">
+  <h2>Start logging breaches today</h2>
+  <p>Get early access to Breach Intel. Deploy in minutes. No code changes.</p>
+  <form class="waitlist-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+    <input type="email" name="email" placeholder="your@email.com" required>
+    <button type="submit" class="btn btn-primary">Join Waitlist</button>
+  </form>
+  <p style="color: var(--text-dim); font-size: 0.8rem; margin-top: 1rem;">No spam. We'll notify you when early access opens.</p>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>
+    Built by <a href="https://github.com/ParthaMehtaOrg" target="_blank">the Breach Intel team</a>.
+    Published on <a href="https://pypi.org/project/breach-intel-client/" target="_blank">PyPI</a>.
+  </p>
+</footer>
+
+<!-- Smooth scroll -->
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>
