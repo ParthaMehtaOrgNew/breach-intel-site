@@ -4,1161 +4,221 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Breach Intel — The Audit Layer for AI Agents</title>
-  <meta name="description" content="Attach to any AI agent. Log every compliance breach. Immutably. Zero code changes.">
+  <meta name="description" content="Policy agent infrastructure that attaches to any AI agent and produces tamper-evident breach audit logs — automatically. Zero code changes.">
   <meta property="og:title" content="Breach Intel — The Audit Layer for AI Agents">
-  <meta property="og:description" content="Policy agent infrastructure that attaches to any AI agent and produces tamper-evident breach audit logs — automatically.">
+  <meta property="og:description" content="Attach to any AI agent. Log every compliance breach. Immutably. Zero code changes.">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #06060e;
-      --bg-surface: #0c0c18;
-      --bg-elevated: #12121f;
-      --border: #1e1e30;
-      --border-hover: #2a2a44;
-      --accent: #3b82f6;
-      --accent-secondary: #60a5fa;
-      --accent-glow: rgba(59, 130, 246, 0.15);
-      --accent-glow-strong: rgba(59, 130, 246, 0.3);
-      --text: #eaeaf4;
-      --text-muted: #8585a8;
-      --text-faint: #44445e;
-      --red: #f87171;
-      --orange: #fb923c;
-      --yellow: #fbbf24;
-      --green: #22c55e;
-      --purple: #a78bfa;
-      --cyan: #38bdf8;
-      --critical: #ef4444;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    code, pre, .mono {
-      font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    /* ── Nav ── */
-    nav {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 100;
-      background: rgba(6, 6, 14, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 0.75rem 0;
-    }
-    .nav-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-weight: 800;
-      font-size: 1.15rem;
-      color: var(--text);
-      text-decoration: none;
-    }
-    .nav-brand .shield { font-size: 1.3rem; }
-    .nav-brand .highlight { color: var(--accent); }
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 0.88rem;
-      font-weight: 500;
-      transition: color 0.2s;
-      padding: 0.3rem 0.5rem;
-      border-radius: 6px;
-    }
-    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-    .nav-cta {
-      background: var(--accent) !important;
-      color: #fff !important;
-      padding: 0.45rem 1.1rem !important;
-      border-radius: 8px !important;
-      font-weight: 600 !important;
-      box-shadow: 0 0 20px var(--accent-glow);
-      transition: all 0.2s !important;
-    }
-    .nav-cta:hover {
-      background: #2563eb !important;
-      box-shadow: 0 0 30px var(--accent-glow-strong) !important;
-      transform: translateY(-1px) !important;
-    }
-
-    /* ── Hero ── */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 8rem 2rem 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 600px;
-      background: radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero::after {
-      content: '';
-      position: absolute;
-      top: 100px;
-      left: -200px;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(ellipse, rgba(167,139,250,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      font-size: 0.78rem;
-      font-weight: 500;
-      color: var(--text-muted);
-      background: var(--bg-surface);
-      margin-bottom: 2rem;
-      position: relative;
-      z-index: 1;
-    }
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--green);
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
-
-    .hero h1 {
-      font-size: clamp(2.8rem, 7vw, 5.2rem);
-      font-weight: 800;
-      line-height: 1.08;
-      letter-spacing: -0.03em;
-      margin-bottom: 1.2rem;
-      position: relative;
-      z-index: 1;
-      background: linear-gradient(135deg, #fff 0%, var(--accent-secondary) 50%, var(--accent) 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero-sub {
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      color: var(--text-muted);
-      max-width: 600px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
-      position: relative;
-      z-index: 1;
-    }
-
-    .hero-ctas {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 3.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.8rem;
-      border-radius: 10px;
-      font-size: 0.92rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
-      font-family: inherit;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent), #2563eb);
-      color: #fff;
-      box-shadow: 0 0 30px var(--accent-glow);
-    }
-    .btn-primary:hover {
-      box-shadow: 0 0 40px var(--accent-glow-strong);
-      transform: translateY(-2px);
-    }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover {
-      border-color: var(--border-hover);
-      background: rgba(255,255,255,0.03);
-      transform: translateY(-2px);
-    }
-
-    /* ── Terminal ── */
-    .terminal {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      max-width: 680px;
-      width: 100%;
-      text-align: left;
-      overflow: hidden;
-      position: relative;
-      z-index: 1;
-    }
-    .terminal-bar {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0.8rem 1rem;
-      background: var(--bg-elevated);
-      border-bottom: 1px solid var(--border);
-    }
-    .terminal-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-    .terminal-dot.r { background: #f87171; }
-    .terminal-dot.y { background: #fbbf24; }
-    .terminal-dot.g { background: #22c55e; }
-    .terminal-body {
-      padding: 1.2rem 1.4rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      line-height: 1.8;
-      color: var(--text-muted);
-      overflow-x: auto;
-    }
-    .terminal-body .prompt { color: var(--green); }
-    .terminal-body .cmd { color: var(--text); }
-    .terminal-body .flag { color: var(--cyan); }
-    .terminal-body .output { color: var(--text-faint); }
-    .terminal-body .success { color: var(--green); }
-    .terminal-body .warn { color: var(--orange); }
-    .terminal-body .url { color: var(--accent-secondary); }
-
-    /* ── Stats Bar ── */
-    .stats-bar {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      background: var(--bg-surface);
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      max-width: 1000px;
-      margin: -2rem auto 0;
-      position: relative;
-      z-index: 2;
-    }
-    .stat-cell {
-      padding: 1.5rem 1rem;
-      text-align: center;
-      border-right: 1px solid var(--border);
-    }
-    .stat-cell:last-child { border-right: none; }
-    .stat-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.2rem;
-    }
-    .stat-label {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-faint);
-      font-weight: 500;
-    }
-
-    /* ── Section Common ── */
-    section {
-      padding: 6rem 0;
-    }
-    .section-eyebrow {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-    }
-    .section-title {
-      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 1rem;
-      line-height: 1.15;
-    }
-    .section-sub {
-      font-size: 1.05rem;
-      color: var(--text-muted);
-      max-width: 600px;
-      line-height: 1.7;
-    }
-    .section-header {
-      margin-bottom: 3.5rem;
-    }
-    .section-header.center {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    /* ── Comparison Table ── */
-    .comparison-section {
-      background: var(--bg-surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .comparison-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 0.5rem;
-    }
-    .comparison-table th {
-      text-align: left;
-      padding: 1rem 1.2rem;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-faint);
-      border-bottom: 1px solid var(--border);
-      font-weight: 600;
-    }
-    .comparison-table td {
-      padding: 1rem 1.2rem;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.92rem;
-      transition: opacity 0.2s;
-    }
-    .comparison-table tr:hover td { opacity: 0.85; }
-    .comparison-table tr:last-child td { border-bottom: none; }
-    .badge-green {
-      background: rgba(34,197,94,0.12);
-      color: var(--green);
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .badge-red {
-      background: rgba(248,113,113,0.12);
-      color: var(--red);
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
-    .badge-yellow {
-      background: rgba(251,191,36,0.12);
-      color: var(--yellow);
-      padding: 0.2rem 0.6rem;
-      border-radius: 4px;
-      font-size: 0.78rem;
-      font-weight: 600;
-    }
-
-    /* ── Features Grid ── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1rem;
-    }
-    .feature-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.6rem;
-      transition: all 0.2s;
-    }
-    .feature-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-      background: var(--bg-elevated);
-    }
-    .feature-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-    .feature-icon.blue { background: rgba(59,130,246,0.15); }
-    .feature-icon.green { background: rgba(34,197,94,0.15); }
-    .feature-icon.orange { background: rgba(251,146,60,0.15); }
-    .feature-icon.purple { background: rgba(167,139,250,0.15); }
-    .feature-icon.red { background: rgba(248,113,113,0.15); }
-    .feature-icon.cyan { background: rgba(56,189,248,0.15); }
-    .feature-card h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .feature-card p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* ── Verticals ── */
-    .verticals-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-    .vertical-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.8rem;
-      transition: all 0.2s;
-    }
-    .vertical-card:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-    }
-    .vertical-card .icon {
-      font-size: 1.8rem;
-      margin-bottom: 1rem;
-    }
-    .vertical-card h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.3rem;
-    }
-    .vertical-card .status {
-      font-size: 0.72rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-    .vertical-card .status.live { color: var(--green); }
-    .vertical-card .status.beta { color: var(--orange); }
-    .vertical-card .status.planned { color: var(--text-faint); }
-    .vertical-card .regs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.8rem;
-    }
-    .reg-tag {
-      background: var(--bg-elevated);
-      border: 1px solid var(--border);
-      padding: 0.15rem 0.55rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    /* ── Breach Types Showcase ── */
-    .breach-types-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 0.6rem;
-    }
-    .breach-chip {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.6rem 0.8rem;
-      transition: all 0.2s;
-    }
-    .breach-chip:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-1px);
-    }
-    .breach-chip .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-    .breach-chip .dot.critical { background: var(--critical); }
-    .breach-chip .dot.high { background: var(--orange); }
-    .breach-chip .dot.medium { background: var(--yellow); }
-    .breach-chip .name {
-      font-size: 0.75rem;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    /* ── Architecture ── */
-    .arch-diagram {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem;
-      overflow-x: auto;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      line-height: 1.7;
-      color: var(--text-muted);
-    }
-    .arch-diagram .layer { color: var(--accent); font-weight: 600; }
-    .arch-diagram .component { color: var(--text); }
-    .arch-diagram .detail { color: var(--text-faint); }
-    .arch-diagram .arrow { color: var(--text-faint); }
-    .arch-diagram .highlight { color: var(--green); font-weight: 600; }
-    .arch-diagram .warn-text { color: var(--orange); }
-
-    /* ── Dashboard Preview ── */
-    .dashboard-preview {
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      margin-top: 2rem;
-    }
-    .dashboard-preview img {
-      width: 100%;
-      display: block;
-    }
-
-    /* ── CTA ── */
-    .cta-section {
-      text-align: center;
-      padding: 8rem 2rem;
-      position: relative;
-      overflow: hidden;
-    }
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .cta-section .section-title {
-      position: relative;
-      z-index: 1;
-    }
-    .cta-section .section-sub {
-      margin: 0 auto 2.5rem;
-      position: relative;
-      z-index: 1;
-    }
-    .cta-buttons {
-      display: flex;
-      gap: 1rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
-    }
-
-    .waitlist-form {
-      display: flex;
-      gap: 0.75rem;
-      justify-content: center;
-      flex-wrap: wrap;
-      max-width: 480px;
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-    .waitlist-form input[type="email"] {
-      flex: 1;
-      min-width: 240px;
-      padding: 0.75rem 1.2rem;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg-surface);
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.92rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .waitlist-form input[type="email"]:focus {
-      border-color: var(--accent);
-    }
-    .waitlist-form button {
-      padding: 0.75rem 1.8rem;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), #2563eb);
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.92rem;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      box-shadow: 0 0 20px var(--accent-glow);
-      transition: all 0.2s;
-    }
-    .waitlist-form button:hover {
-      box-shadow: 0 0 30px var(--accent-glow-strong);
-      transform: translateY(-1px);
-    }
-
-    /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem 0;
-    }
-    .footer-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .footer-copy {
-      font-size: 0.82rem;
-      color: var(--text-faint);
-    }
-    .footer-links {
-      display: flex;
-      gap: 1.5rem;
-    }
-    .footer-links a {
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-links a:hover { color: var(--text); }
-
-    /* ── How It Works ── */
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-      counter-reset: step;
-    }
-    .step {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 2rem 1.6rem;
-      position: relative;
-      counter-increment: step;
-      transition: all 0.2s;
-    }
-    .step:hover {
-      border-color: var(--border-hover);
-      transform: translateY(-2px);
-    }
-    .step::before {
-      content: counter(step);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: var(--accent-glow);
-      color: var(--accent);
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-bottom: 1rem;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .step h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-    .step p {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .step code {
-      background: var(--bg-elevated);
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      color: var(--cyan);
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .stats-bar { grid-template-columns: repeat(3, 1fr); }
-      .steps { grid-template-columns: 1fr; }
-      .features-grid { grid-template-columns: 1fr; }
-      .verticals-grid { grid-template-columns: 1fr; }
-      .comparison-table { font-size: 0.82rem; }
-      .hero { padding: 7rem 1.5rem 3rem; }
-    }
-    @media (max-width: 480px) {
-      .stats-bar { grid-template-columns: repeat(2, 1fr); }
-      .breach-types-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- Nav -->
-  <nav>
+  <nav class="nav">
     <div class="nav-inner">
-      <a href="#" class="nav-brand">
-        <span class="shield">🛡️</span>
-        Breach<span class="highlight">Intel</span>
+      <a href="index.html" class="nav-brand">
+        <span class="icon">🛡️</span> Breach<span class="highlight">Intel</span>
       </a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
       <div class="nav-links">
-        <a href="#how-it-works">How It Works</a>
-        <a href="#features">Features</a>
-        <a href="#verticals">Verticals</a>
-        <a href="#breach-types">Breach Types</a>
-        <a href="#architecture">Architecture</a>
-        <a href="https://pypi.org/project/breach-intel/" target="_blank">PyPI</a>
-        <a href="#get-started" class="nav-cta">Get Started</a>
+        <a href="index.html" class="active">Home</a>
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="blog.html">Blog</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html" class="nav-cta">Get Started</a>
       </div>
     </div>
   </nav>
 
   <!-- Hero -->
   <section class="hero">
-    <div class="hero-badge">
-      <span class="pulse-dot"></span>
-      v0.3.1 — Fintech live · Healthcare & Pharma in beta
-    </div>
-    <h1>One agent. Every breach.<br>Immutable proof.</h1>
-    <p class="hero-sub">
-      Policy agent infrastructure that attaches to any AI agent and produces
-      tamper-evident compliance breach logs — automatically. Zero code changes.
-    </p>
-    <div class="hero-ctas">
-      <a href="#get-started" class="btn btn-primary">Join Waitlist</a>
-      <a href="#how-it-works" class="btn btn-ghost">See How It Works →</a>
-    </div>
-    <div class="terminal">
-      <div class="terminal-bar">
-        <span class="terminal-dot r"></span>
-        <span class="terminal-dot y"></span>
-        <span class="terminal-dot g"></span>
-      </div>
-      <div class="terminal-body">
-        <span class="prompt">$</span> <span class="cmd">pip install breach-intel</span><br>
-        <span class="output">Installing... done.</span><br><br>
-        <span class="prompt">$</span> <span class="cmd">breach-intel install-hook</span><br>
-        <span class="success">✓ Persistent hook installed to sitecustomize.py</span><br>
-        <span class="success">✓ Auto-attach enabled for all Python agents</span><br><br>
-        <span class="prompt">$</span> <span class="cmd">python my_agent.py</span><br>
-        <span class="output">Agent registered: <span class="flag">fintech-advisor-01</span></span><br>
-        <span class="warn">⚠ BREACH DETECTED:</span> <span class="cmd">PII_EXPOSURE</span> <span class="output">severity=</span><span class="warn">CRITICAL</span><br>
-        <span class="output">  → SSN pattern found in agent response</span><br>
-        <span class="output">  → Logged to DB + JSONL (SHA-256: <span class="flag">a3f8c1...</span>)</span><br>
-        <span class="output">  → Webhook fired to Slack</span><br><br>
-        <span class="prompt">$</span> <span class="cmd">open</span> <span class="url">http://localhost:8080/dashboard/</span><br>
-        <span class="success">✓ Dashboard ready — 21 breaches across 5 agents</span>
+    <div class="container hero-content">
+      <div class="hero-layout">
+        <div>
+          <div class="badge accent" style="margin-bottom:1.5rem;">
+            <span style="width:7px;height:7px;border-radius:50%;background:var(--success);display:inline-block;"></span>
+            v0.3.1 — Now on PyPI
+          </div>
+          <h1>The audit layer<br>for <span style="color:var(--accent)">AI agents</span></h1>
+          <p class="sub">Attach to any AI agent. Log every compliance breach with tamper-evident, immutable records. No code changes. No agent modifications.</p>
+          <div class="hero-ctas">
+            <a href="contact.html" class="btn btn-primary btn-lg">Request Early Access</a>
+            <a href="features.html" class="btn btn-outline btn-lg">Explore Features <span class="arrow">→</span></a>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot r"></span>
+            <span class="terminal-dot y"></span>
+            <span class="terminal-dot g"></span>
+          </div>
+          <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">pip install breach-intel</span>
+<span class="output">Installing... done.</span>
+
+<span class="prompt">$</span> <span class="cmd">breach-intel install-hook</span>
+<span class="success">✓ Persistent hook installed</span>
+<span class="success">✓ Auto-attach enabled for all Python agents</span>
+
+<span class="prompt">$</span> <span class="cmd">python my_agent.py</span>
+<span class="output">Agent registered: <span class="flag">fintech-advisor-01</span></span>
+<span class="warn">⚠ BREACH:</span> <span class="cmd">PII_EXPOSURE</span> <span class="output">severity=</span><span class="accent-text">CRITICAL</span>
+<span class="output">  → SSN pattern in agent response</span>
+<span class="output">  → Logged (SHA-256: <span class="flag">a3f8c1...</span>)</span>
+<span class="output">  → Webhook fired to Slack</span>
+
+<span class="prompt">$</span> <span class="cmd">open</span> <span class="url">localhost:8080/dashboard/</span>
+<span class="success">✓ 21 breaches across 5 agents</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Stats Bar -->
-  <div class="container">
-    <div class="stats-bar">
-      <div class="stat-cell">
-        <div class="stat-value">40+</div>
-        <div class="stat-label">Breach Types</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-value">&lt;1ms</div>
-        <div class="stat-label">Detection</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-value">4</div>
-        <div class="stat-label">Verticals</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-value">4</div>
-        <div class="stat-label">Frameworks</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-value">0</div>
-        <div class="stat-label">Code Changes</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-value">SHA-256</div>
-        <div class="stat-label">Hash Chain</div>
+  <!-- Stats -->
+  <section style="padding-top:0;">
+    <div class="container fade-in">
+      <div class="stats-row">
+        <div class="stat"><div class="stat-value">40+</div><div class="stat-label">Breach Types</div></div>
+        <div class="stat"><div class="stat-value">&lt;1ms</div><div class="stat-label">Detection</div></div>
+        <div class="stat"><div class="stat-value">4</div><div class="stat-label">Verticals</div></div>
+        <div class="stat"><div class="stat-value">4</div><div class="stat-label">Frameworks</div></div>
+        <div class="stat"><div class="stat-value">0</div><div class="stat-label">Code Changes</div></div>
+        <div class="stat"><div class="stat-value">SHA-256</div><div class="stat-label">Hash Chain</div></div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Why Breach Intel -->
-  <section class="comparison-section">
+  <!-- Value Prop -->
+  <section class="bg-warm">
     <div class="container">
-      <div class="section-header">
-        <div class="section-eyebrow">Why Breach Intel?</div>
-        <h2 class="section-title">Manual compliance is broken</h2>
-        <p class="section-sub">AI agents in regulated industries make thousands of decisions daily with zero audit trail. When regulators ask "what did your AI do?" — most teams can't answer.</p>
+      <div class="section-header center fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> The Problem</div>
+        <h2 class="section-title">AI agents have zero<br>accountability</h2>
+        <p class="section-sub">Thousands of AI agents in fintech, healthcare, and pharma make critical decisions daily — with no audit trail. When regulators ask what your AI did, you need an answer.</p>
       </div>
-      <table class="comparison-table">
-        <thead>
-          <tr>
-            <th>Metric</th>
-            <th>Manual Auditing</th>
-            <th>Breach Intel</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Detection latency</td>
-            <td>Days to weeks</td>
-            <td><span class="badge-green">&lt;1ms real-time</span></td>
-          </tr>
-          <tr>
-            <td>Coverage</td>
-            <td>Spot checks, sampled</td>
-            <td><span class="badge-green">100% of agent outputs</span></td>
-          </tr>
-          <tr>
-            <td>Tamper resistance</td>
-            <td>Editable logs</td>
-            <td><span class="badge-green">SHA-256 hash chain</span></td>
-          </tr>
-          <tr>
-            <td>Code changes needed</td>
-            <td>Custom integration per agent</td>
-            <td><span class="badge-green">Zero — auto-attaches</span></td>
-          </tr>
-          <tr>
-            <td>Breach type coverage</td>
-            <td>5–10 rules (hand-written)</td>
-            <td><span class="badge-green">40+ types across 4 verticals</span></td>
-          </tr>
-          <tr>
-            <td>Regulatory readiness</td>
-            <td>Manual report generation</td>
-            <td><span class="badge-green">SOC 2, GDPR, HIPAA, FDA, SEC</span></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="grid-3 fade-in">
+        <div class="card">
+          <div class="card-icon red">🏦</div>
+          <h3>Fintech exposure</h3>
+          <p>Agents leaking SSNs, giving unauthorized financial advice, or accessing data across tenant boundaries — with no record it happened.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon blue">🏥</div>
+          <h3>Healthcare risk</h3>
+          <p>Clinical AI exposing PHI, fabricating diagnoses, or disclosing mental health records — HIPAA violations with no audit trail.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon purple">💊</div>
+          <h3>Pharma compliance gaps</h3>
+          <p>Trial data fabrication, unblinding breaches, and 21-CFR-11 violations going undetected until an FDA audit surfaces them.</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- How It Works -->
-  <section id="how-it-works">
-    <div class="container">
-      <div class="section-header center">
-        <div class="section-eyebrow">How It Works</div>
-        <h2 class="section-title">Three commands. Full coverage.</h2>
-        <p class="section-sub">No SDK wrapping, no agent modifications, no middleware injection. Install once, monitor everything.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <h3>Install</h3>
-          <p>One pip install drops the policy agent, classifier, and persistent hook onto your system. <code>pip install breach-intel</code></p>
-        </div>
-        <div class="step">
-          <h3>Hook</h3>
-          <p>The install-hook command writes a <code>sitecustomize.py</code> that auto-patches every Python agent at import time. OpenAI, Anthropic, LangChain — all intercepted.</p>
-        </div>
-        <div class="step">
-          <h3>Run</h3>
-          <p>Start your agents normally. Every LLM response is scanned in &lt;1ms by the rule-based classifier. Breaches log to DB, JSONL, and webhooks — immutably.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features -->
-  <section id="features">
-    <div class="container">
-      <div class="section-header center">
-        <div class="section-eyebrow">Capabilities</div>
-        <h2 class="section-title">Everything you need for agent compliance</h2>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon blue">🔍</div>
-          <h3>Rule-Based Classification</h3>
-          <p>Deterministic breach detection in &lt;1ms. No LLM in the critical path. Pattern matching for PII, PHI, financial data, and 40+ violation types.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon purple">🧠</div>
-          <h3>Agentic Deep Analysis</h3>
-          <p>Optional async LangGraph pipeline powered by Claude. Six-node analysis graph adds context, rationale, and regulatory mapping — without blocking.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon green">🔗</div>
-          <h3>SHA-256 Hash Chain</h3>
-          <p>Every breach record is checksummed and chained. Integrity scanning runs every 6 hours. If a single record is tampered, the chain breaks.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon orange">📊</div>
-          <h3>Live Dashboard</h3>
-          <p>Single-file React SPA served at /dashboard. Breach counts, severity breakdown, agent heatmaps, live feed, and click-to-inspect detail views.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon cyan">🔌</div>
-          <h3>Zero-Touch Auto-Attach</h3>
-          <p>Persistent sitecustomize.py hook patches all AI frameworks at import time. Your agent code stays untouched. Works with OpenAI, Anthropic, LangChain.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon red">🚨</div>
-          <h3>Webhook Alerts</h3>
-          <p>CRITICAL breaches fire instantly to Slack, Discord, or generic webhooks. Configure thresholds and channels per vertical.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon blue">📝</div>
-          <h3>Immutable Dual-Write</h3>
-          <p>Every breach writes to PostgreSQL/SQLite AND real-time JSONL files. Two independent audit trails. Ship JSONL to your SIEM.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon purple">🏗️</div>
-          <h3>Auto-Scaling</h3>
-          <p>When event load exceeds threshold (default 500/min), the policy agent spawns additional instances via Docker, K8s, or subprocess.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon green">🔐</div>
-          <h3>Multi-Tenant Auth</h3>
-          <p>Scoped API keys with tenant isolation. Rate limiting at 300 events/min per key. Admin keys exempt. Full RBAC.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Verticals -->
-  <section id="verticals" class="comparison-section">
-    <div class="container">
-      <div class="section-header center">
-        <div class="section-eyebrow">Industry Coverage</div>
-        <h2 class="section-title">Built for regulated industries</h2>
-        <p class="section-sub">Purpose-built breach taxonomies for each vertical, mapped to the specific regulations your compliance team cares about.</p>
-      </div>
-      <div class="verticals-grid">
-        <div class="vertical-card">
-          <div class="icon">🏦</div>
-          <h3>Fintech</h3>
-          <div class="status live">● Production Ready</div>
-          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem;">12 breach types — PII exposure, card data, cross-tenant leaks, unauthorized financial advice, suspicious transactions, privilege escalation.</p>
-          <div class="regs">
-            <span class="reg-tag">SOC 2</span>
-            <span class="reg-tag">GDPR</span>
-            <span class="reg-tag">CCPA</span>
-            <span class="reg-tag">PCI-DSS</span>
-            <span class="reg-tag">SOX</span>
-            <span class="reg-tag">SEBI</span>
-            <span class="reg-tag">RBI</span>
-            <span class="reg-tag">FINCEN</span>
-          </div>
-        </div>
-        <div class="vertical-card">
-          <div class="icon">🏥</div>
-          <h3>Healthcare</h3>
-          <div class="status beta">● Beta</div>
-          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem;">14 breach types — PHI exposure, clinical notes, unauthorized prescriptions, diagnostic hallucinations, minors data, mental health, HIV status, genomic data.</p>
-          <div class="regs">
-            <span class="reg-tag">HIPAA</span>
-            <span class="reg-tag">42 CFR Part 2</span>
-            <span class="reg-tag">GDPR</span>
-            <span class="reg-tag">DPDP</span>
-            <span class="reg-tag">HL7/FHIR</span>
-          </div>
-        </div>
-        <div class="vertical-card">
-          <div class="icon">💊</div>
-          <h3>Pharma</h3>
-          <div class="status beta">● Beta</div>
-          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem;">14 breach types — trial data fabrication, unblinding, 21-CFR-11 violations, e-signature bypass, pharmacovigilance, GMP violations.</p>
-          <div class="regs">
-            <span class="reg-tag">FDA 21-CFR-11</span>
-            <span class="reg-tag">ICH-E6</span>
-            <span class="reg-tag">ICH-Q10</span>
-            <span class="reg-tag">EMA</span>
-            <span class="reg-tag">GDPR</span>
-          </div>
-        </div>
-        <div class="vertical-card">
-          <div class="icon">⚽</div>
-          <h3>Sports</h3>
-          <div class="status planned">○ Planned</div>
-          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:0.8rem;">Odds manipulation detection, insider data leaks, athlete PII protection, match-fixing signal analysis.</p>
-          <div class="regs">
-            <span class="reg-tag">Coming Soon</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Breach Types -->
-  <section id="breach-types">
-    <div class="container">
-      <div class="section-header center">
-        <div class="section-eyebrow">Taxonomy</div>
-        <h2 class="section-title">40+ breach types out of the box</h2>
-        <p class="section-sub">Each type has severity, regex patterns, regulatory mapping, and remediation guidance built in.</p>
-      </div>
-      <div class="breach-types-grid">
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">PII_EXPOSURE</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">CARD_DATA_EXPOSURE</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">PHI_EXPOSURE</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">CROSS_TENANT_LEAK</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">DATA_EXFILTRATION</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">SUSPICIOUS_TRANSACTION</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">CLINICAL_NOTE_LEAK</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">TRIAL_DATA_FABRICATION</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">UNBLINDING_BREACH</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">UNAUTHORIZED_RX_ACTION</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">DIAGNOSTIC_HALLUCINATION</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">ESIGNATURE_BYPASS</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">MINORS_DATA_EXPOSURE</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">HIV_STATUS_DISCLOSURE</span></div>
-        <div class="breach-chip"><span class="dot critical"></span><span class="name">GENOMIC_DATA_EXPOSURE</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">UNAUTHORIZED_ACCESS</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">PRIVILEGE_ESCALATION</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">REGULATORY_VIOLATION</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">HALLUCINATION_FINANCIAL</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">AUDIT_TRAIL_MISSING</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">AUDIT_TRAIL_21CFR11</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">PHARMA_VIGILANCE</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">GMP_VIOLATION</span></div>
-        <div class="breach-chip"><span class="dot high"></span><span class="name">CROSS_PATIENT_LEAK</span></div>
-        <div class="breach-chip"><span class="dot medium"></span><span class="name">SCOPE_CREEP</span></div>
-        <div class="breach-chip"><span class="dot medium"></span><span class="name">UNAPPROVED_EXT_CALL</span></div>
-        <div class="breach-chip"><span class="dot medium"></span><span class="name">INSURANCE_DATA_LEAK</span></div>
-        <div class="breach-chip"><span class="dot medium"></span><span class="name">MENTAL_HEALTH_DISC</span></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Architecture -->
-  <section id="architecture" class="comparison-section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-eyebrow">Under the Hood</div>
-        <h2 class="section-title">Architecture</h2>
-        <p class="section-sub">A sidecar policy agent that intercepts, classifies, and logs — without touching your agent code.</p>
-      </div>
-      <div class="arch-diagram">
-<span class="layer">┌─────────────────────────────────────────────────────────────┐</span>
-<span class="layer">│</span>  <span class="component">Your AI Agent</span> <span class="detail">(OpenAI / Anthropic / LangChain / OpenClaw)</span>   <span class="layer">│</span>
-<span class="layer">│</span>  <span class="detail">No code changes — sitecustomize.py patches at import</span>       <span class="layer">│</span>
-<span class="layer">└──────────────────────────┬──────────────────────────────────┘</span>
-                           <span class="arrow">│</span>  <span class="detail">auto-intercepted LLM response</span>
-                           <span class="arrow">▼</span>
-<span class="layer">┌─────────────────────────────────────────────────────────────┐</span>
-<span class="layer">│</span>  <span class="highlight">Policy Agent</span> <span class="detail">(FastAPI · :8080)</span>                              <span class="layer">│</span>
-<span class="layer">│</span>                                                             <span class="layer">│</span>
-<span class="layer">│</span>  <span class="arrow">1.</span> <span class="component">Auth + Rate Limit</span>   <span class="detail">→ scoped API keys, 300/min</span>       <span class="layer">│</span>
-<span class="layer">│</span>  <span class="arrow">2.</span> <span class="component">Auto-Register</span>       <span class="detail">→ first event? register agent</span>    <span class="layer">│</span>
-<span class="layer">│</span>  <span class="arrow">3.</span> <span class="component">Payload Sanitize</span>    <span class="detail">→ normalize, strip noise</span>        <span class="layer">│</span>
-<span class="layer">│</span>  <span class="arrow">4.</span> <span class="warn-text">Classifier</span>          <span class="detail">→ rule-based, &lt;1ms, deterministic</span><span class="layer">│</span>
-<span class="layer">│</span>  <span class="arrow">5.</span> <span class="component">Breach Logger</span>       <span class="detail">→ DB + JSONL (SHA-256 chained)</span>   <span class="layer">│</span>
-<span class="layer">│</span>  <span class="arrow">6.</span> <span class="component">Webhook Alerter</span>     <span class="detail">→ Slack / Discord / generic</span>     <span class="layer">│</span>
-<span class="layer">│</span>  <span class="arrow">7.</span> <span class="component">Agentic Analyzer</span>    <span class="detail">→ LangGraph + Claude (async)</span>    <span class="layer">│</span>
-<span class="layer">│</span>                                                             <span class="layer">│</span>
-<span class="layer">└────────┬──────────────┬──────────────┬──────────────────────┘</span>
-         <span class="arrow">│</span>              <span class="arrow">│</span>              <span class="arrow">│</span>
-         <span class="arrow">▼</span>              <span class="arrow">▼</span>              <span class="arrow">▼</span>
-  <span class="component">PostgreSQL/SQLite</span>  <span class="component">breach_logs/*.jsonl</span>  <span class="component">Webhook Endpoints</span>
-  <span class="detail">(source of truth)</span>  <span class="detail">(ship to SIEM)</span>       <span class="detail">(real-time alerts)</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Dashboard Preview -->
   <section>
     <div class="container">
-      <div class="section-header center">
-        <div class="section-eyebrow">Dashboard</div>
-        <h2 class="section-title">See everything. In real time.</h2>
-        <p class="section-sub">Breach counts, severity breakdown, agent heatmaps, live feed, and click-to-inspect detail views — all in a single-file React SPA.</p>
+      <div class="section-header center fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> How It Works</div>
+        <h2 class="section-title">Three steps. Full coverage.</h2>
+        <p class="section-sub">No SDK wrapping, no agent modifications, no middleware injection. Install once, monitor everything.</p>
       </div>
-      <div class="dashboard-preview">
-        <img src="dashboard-screenshot.png" alt="Breach Intel Dashboard showing breach counts, agent activity, and violation types">
+      <div class="grid-3 fade-in">
+        <div class="card" style="text-align:center;padding:2.5rem 2rem;">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:var(--font-mono);font-weight:700;color:var(--accent);font-size:1.1rem;">1</div>
+          <h3>Install</h3>
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin-top:0.5rem;">One pip install drops the policy agent, classifier, and persistent hook onto your system.</p>
+          <code style="display:inline-block;margin-top:0.8rem;background:var(--bg-warm);padding:0.3rem 0.8rem;border-radius:6px;font-size:0.8rem;color:var(--accent);">pip install breach-intel</code>
+        </div>
+        <div class="card" style="text-align:center;padding:2.5rem 2rem;">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:var(--font-mono);font-weight:700;color:var(--accent);font-size:1.1rem;">2</div>
+          <h3>Hook</h3>
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin-top:0.5rem;">The install-hook writes a sitecustomize.py that auto-patches every Python agent at import time.</p>
+          <code style="display:inline-block;margin-top:0.8rem;background:var(--bg-warm);padding:0.3rem 0.8rem;border-radius:6px;font-size:0.8rem;color:var(--accent);">breach-intel install-hook</code>
+        </div>
+        <div class="card" style="text-align:center;padding:2.5rem 2rem;">
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--accent-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:var(--font-mono);font-weight:700;color:var(--accent);font-size:1.1rem;">3</div>
+          <h3>Run</h3>
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin-top:0.5rem;">Start your agents normally. Every LLM response is classified in &lt;1ms. Breaches log to DB, JSONL, and webhooks.</p>
+          <code style="display:inline-block;margin-top:0.8rem;background:var(--bg-warm);padding:0.3rem 0.8rem;border-radius:6px;font-size:0.8rem;color:var(--accent);">python my_agent.py</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard -->
+  <section class="bg-warm">
+    <div class="container">
+      <div class="section-header center fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> Dashboard</div>
+        <h2 class="section-title">See everything. In real time.</h2>
+        <p class="section-sub">Breach counts, severity breakdowns, agent heatmaps, and a live feed — all in a single-file React SPA.</p>
+      </div>
+      <div class="fade-in" style="border:1px solid var(--border);border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow-xl);">
+        <img src="dashboard-screenshot.png" alt="Breach Intel Dashboard" style="width:100%;display:block;">
       </div>
     </div>
   </section>
 
   <!-- CTA -->
-  <section class="cta-section" id="get-started">
-    <h2 class="section-title">Start logging breaches today.</h2>
-    <p class="section-sub">Get early access to Breach Intel. Deploy in minutes. No code changes required.</p>
-    <form class="waitlist-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-      <input type="email" name="email" placeholder="your@email.com" required>
-      <button type="submit">Join Waitlist</button>
-    </form>
-    <div class="cta-buttons" style="margin-top:1.5rem;">
-      <a href="https://pypi.org/project/breach-intel/" target="_blank" class="btn btn-ghost">View on PyPI →</a>
+  <section style="text-align:center;padding:6rem 2rem;">
+    <div class="container-narrow fade-in">
+      <h2 class="section-title">Ready to make your<br>AI agents <span class="accent">accountable</span>?</h2>
+      <p class="section-sub" style="margin:1rem auto 2rem;">Deploy in minutes. No code changes. Start logging every breach today.</p>
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+        <a href="contact.html" class="btn btn-accent btn-lg">Request Early Access</a>
+        <a href="https://pypi.org/project/breach-intel/" target="_blank" class="btn btn-outline btn-lg">View on PyPI →</a>
+      </div>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-copy">© 2026 Breach Intel</div>
-      <div class="footer-links">
-        <a href="#how-it-works">How It Works</a>
-        <a href="#features">Features</a>
-        <a href="#verticals">Verticals</a>
-        <a href="#architecture">Architecture</a>
-        <a href="https://pypi.org/project/breach-intel/" target="_blank">PyPI</a>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><span class="icon">🛡️</span> BreachIntel</div>
+          <p class="footer-desc">Policy agent infrastructure that attaches to any AI agent and produces tamper-evident compliance breach logs — automatically.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <a href="features.html" class="footer-link">Features</a>
+          <a href="pricing.html" class="footer-link">Pricing</a>
+          <a href="https://pypi.org/project/breach-intel/" target="_blank" class="footer-link">PyPI</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html" class="footer-link">About</a>
+          <a href="blog.html" class="footer-link">Blog</a>
+          <a href="contact.html" class="footer-link">Contact</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Security</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 Breach Intel. All rights reserved.</span>
+        <div class="footer-socials">
+          <a href="https://github.com/ParthaMehtaOrg" target="_blank">GitHub</a>
+          <a href="https://pypi.org/project/breach-intel/" target="_blank">PyPI</a>
+        </div>
       </div>
     </div>
   </footer>
 
+  <script src="js/main.js"></script>
 </body>
 </html>

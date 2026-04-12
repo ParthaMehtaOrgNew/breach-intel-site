@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing — Breach Intel</title>
+  <meta name="description" content="Breach Intel pricing plans — from open source to enterprise. Start free, scale as you grow.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand"><span class="icon">🛡️</span> Breach<span class="highlight">Intel</span></a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="blog.html">Blog</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="section-eyebrow"><span class="dot"></span> Pricing</div>
+      <h1>Simple, transparent pricing</h1>
+      <p>Start free with the open-source core. Scale with Pro and Enterprise as your compliance needs grow.</p>
+    </div>
+  </div>
+
+  <!-- Plans -->
+  <section>
+    <div class="container">
+      <div class="pricing-grid fade-in">
+        <!-- Community -->
+        <div class="pricing-card">
+          <h3>Community</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);">For individual developers and small teams experimenting with agent compliance.</p>
+          <div class="price">$0</div>
+          <div class="period">Free forever</div>
+          <a href="https://pypi.org/project/breach-intel/" target="_blank" class="btn btn-outline" style="width:100%;justify-content:center;">Install from PyPI</a>
+          <ul class="pricing-features">
+            <li>Up to 3 agents</li>
+            <li>Rule-based classifier (&lt;1ms)</li>
+            <li>SQLite storage</li>
+            <li>JSONL breach logs</li>
+            <li>Live dashboard</li>
+            <li>Fintech vertical (12 types)</li>
+            <li>SHA-256 hash chain</li>
+            <li>CLI diagnostics</li>
+            <li>Community support</li>
+          </ul>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card featured">
+          <h3>Pro</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);">For teams running AI agents in production across regulated industries.</p>
+          <div class="price">$149<span>/mo</span></div>
+          <div class="period">Per deployment</div>
+          <a href="contact.html" class="btn btn-accent" style="width:100%;justify-content:center;">Request Access</a>
+          <ul class="pricing-features">
+            <li>Unlimited agents</li>
+            <li>All Community features</li>
+            <li>Agentic deep analysis (Claude)</li>
+            <li>PostgreSQL storage</li>
+            <li>All 4 verticals (40+ types)</li>
+            <li>Webhook alerts (Slack, Discord)</li>
+            <li>Auto-scaling</li>
+            <li>Multi-tenant auth &amp; RBAC</li>
+            <li>Rate limiting (configurable)</li>
+            <li>Prometheus metrics</li>
+            <li>Priority email support</li>
+          </ul>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="pricing-card">
+          <h3>Enterprise</h3>
+          <p style="font-size:0.85rem;color:var(--text-secondary);">For organizations with custom compliance requirements and dedicated support needs.</p>
+          <div class="price">Custom</div>
+          <div class="period">Annual contract</div>
+          <a href="contact.html" class="btn btn-primary" style="width:100%;justify-content:center;">Contact Sales</a>
+          <ul class="pricing-features">
+            <li>Everything in Pro</li>
+            <li>Custom breach taxonomies</li>
+            <li>Custom vertical development</li>
+            <li>On-premise deployment</li>
+            <li>SSO / SAML integration</li>
+            <li>Compliance report generation</li>
+            <li>Dedicated account manager</li>
+            <li>SLA guarantees</li>
+            <li>Security review &amp; pen test</li>
+            <li>24/7 support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="bg-warm">
+    <div class="container">
+      <div class="section-header center fade-in">
+        <h2 class="section-title">Plan comparison</h2>
+      </div>
+      <div class="table-wrap fade-in">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Community</th>
+              <th>Pro</th>
+              <th>Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Agents</td><td>3</td><td>Unlimited</td><td>Unlimited</td></tr>
+            <tr><td>Rule-based classifier</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Agentic deep analysis</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Verticals</td><td>Fintech</td><td>All 4</td><td>All + Custom</td></tr>
+            <tr><td>Breach types</td><td>12</td><td>40+</td><td>40+ + Custom</td></tr>
+            <tr><td>Storage</td><td>SQLite</td><td>PostgreSQL</td><td>PostgreSQL / Custom</td></tr>
+            <tr><td>Hash chain integrity</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Dashboard</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Webhook alerts</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Auto-scaling</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>Multi-tenant RBAC</td><td class="cross">—</td><td class="check">✓</td><td class="check">✓</td></tr>
+            <tr><td>SSO / SAML</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>On-premise</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>SLA</td><td class="cross">—</td><td class="cross">—</td><td class="check">✓</td></tr>
+            <tr><td>Support</td><td>Community</td><td>Priority email</td><td>24/7 dedicated</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section>
+    <div class="container-narrow">
+      <div class="section-header center fade-in">
+        <h2 class="section-title">Frequently asked questions</h2>
+      </div>
+      <div class="fade-in">
+        <div style="border-bottom:1px solid var(--border);padding:1.5rem 0;">
+          <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Can I try Breach Intel for free?</h3>
+          <p style="font-size:0.9rem;color:var(--text-secondary);">Yes. The Community plan is free forever and available on PyPI right now. Install with <code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.82rem;">pip install breach-intel</code> and start logging breaches immediately.</p>
+        </div>
+        <div style="border-bottom:1px solid var(--border);padding:1.5rem 0;">
+          <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Do I need to modify my agent code?</h3>
+          <p style="font-size:0.9rem;color:var(--text-secondary);">No. Breach Intel uses a persistent Python hook (sitecustomize.py) to auto-patch supported frameworks at import time. Your agent code stays completely untouched.</p>
+        </div>
+        <div style="border-bottom:1px solid var(--border);padding:1.5rem 0;">
+          <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.5rem;">What happens if the policy agent goes down?</h3>
+          <p style="font-size:0.9rem;color:var(--text-secondary);">The SDK has a 5-second timeout and fails silently. Your agent continues running normally — breach logging resumes when the policy agent recovers. No agent downtime, ever.</p>
+        </div>
+        <div style="padding:1.5rem 0;">
+          <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Can I deploy on-premise?</h3>
+          <p style="font-size:0.9rem;color:var(--text-secondary);">Yes, with the Enterprise plan. Breach Intel ships as a Docker container and can run in your VPC, air-gapped environments, or any infrastructure with Docker/K8s support.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><span class="icon">🛡️</span> BreachIntel</div>
+          <p class="footer-desc">Policy agent infrastructure that attaches to any AI agent and produces tamper-evident compliance breach logs — automatically.</p>
+        </div>
+        <div><h4>Product</h4><a href="features.html" class="footer-link">Features</a><a href="pricing.html" class="footer-link">Pricing</a><a href="https://pypi.org/project/breach-intel/" target="_blank" class="footer-link">PyPI</a></div>
+        <div><h4>Company</h4><a href="about.html" class="footer-link">About</a><a href="blog.html" class="footer-link">Blog</a><a href="contact.html" class="footer-link">Contact</a></div>
+        <div><h4>Legal</h4><a href="#" class="footer-link">Privacy Policy</a><a href="#" class="footer-link">Terms of Service</a><a href="#" class="footer-link">Security</a></div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 Breach Intel. All rights reserved.</span>
+        <div class="footer-socials"><a href="https://github.com/ParthaMehtaOrg" target="_blank">GitHub</a><a href="https://pypi.org/project/breach-intel/" target="_blank">PyPI</a></div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Breach Intel</title>
+  <meta name="description" content="Get in touch with the Breach Intel team. Request early access, ask about enterprise plans, or say hello.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand"><span class="icon">🛡️</span> Breach<span class="highlight">Intel</span></a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="blog.html">Blog</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="section-eyebrow"><span class="dot"></span> Contact</div>
+      <h1>Let's talk</h1>
+      <p>Request early access, ask about enterprise plans, or just say hello. We respond within 24 hours.</p>
+    </div>
+  </div>
+
+  <section>
+    <div class="container">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;">
+
+        <!-- Form -->
+        <div class="fade-in">
+          <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:1.5rem;">Send us a message</h2>
+          <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+            <div class="grid-2" style="gap:1rem;">
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="you@company.com" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company" class="form-input" placeholder="Your company (optional)">
+            </div>
+            <div class="form-group">
+              <label for="subject">Subject</label>
+              <select id="subject" name="subject" class="form-input" required>
+                <option value="">Select a topic</option>
+                <option value="early-access">Request Early Access</option>
+                <option value="enterprise">Enterprise Inquiry</option>
+                <option value="partnership">Partnership</option>
+                <option value="support">Technical Support</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" class="form-input" placeholder="Tell us about your use case, team size, and what you're looking for..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-accent btn-lg" style="width:100%;justify-content:center;">Send Message</button>
+          </form>
+        </div>
+
+        <!-- Info -->
+        <div class="fade-in">
+          <h2 style="font-size:1.3rem;font-weight:700;margin-bottom:1.5rem;">Other ways to reach us</h2>
+
+          <div class="card" style="margin-bottom:1rem;padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+              <span style="font-size:1.2rem;">📧</span>
+              <h3 style="font-size:0.95rem;font-weight:700;">Email</h3>
+            </div>
+            <p style="font-size:0.88rem;color:var(--text-secondary);">hello@breachintel.dev</p>
+          </div>
+
+          <div class="card" style="margin-bottom:1rem;padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+              <span style="font-size:1.2rem;">💻</span>
+              <h3 style="font-size:0.95rem;font-weight:700;">GitHub</h3>
+            </div>
+            <p style="font-size:0.88rem;color:var(--text-secondary);">
+              <a href="https://github.com/ParthaMehtaOrg" target="_blank" style="color:var(--accent);text-decoration:underline;">github.com/ParthaMehtaOrg</a>
+            </p>
+          </div>
+
+          <div class="card" style="margin-bottom:1rem;padding:1.5rem;">
+            <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+              <span style="font-size:1.2rem;">📦</span>
+              <h3 style="font-size:0.95rem;font-weight:700;">PyPI</h3>
+            </div>
+            <p style="font-size:0.88rem;color:var(--text-secondary);">
+              <a href="https://pypi.org/project/breach-intel/" target="_blank" style="color:var(--accent);text-decoration:underline;">pypi.org/project/breach-intel</a>
+            </p>
+          </div>
+
+          <div class="card" style="padding:1.5rem;background:var(--bg-warm);">
+            <h3 style="font-size:0.95rem;font-weight:700;margin-bottom:0.5rem;">Enterprise?</h3>
+            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.6;">Need custom verticals, on-premise deployment, SSO, or SLA guarantees? Select "Enterprise Inquiry" in the form and we'll schedule a call within 48 hours.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><span class="icon">🛡️</span> BreachIntel</div>
+          <p class="footer-desc">Policy agent infrastructure that attaches to any AI agent and produces tamper-evident compliance breach logs — automatically.</p>
+        </div>
+        <div><h4>Product</h4><a href="features.html" class="footer-link">Features</a><a href="pricing.html" class="footer-link">Pricing</a><a href="https://pypi.org/project/breach-intel/" target="_blank" class="footer-link">PyPI</a></div>
+        <div><h4>Company</h4><a href="about.html" class="footer-link">About</a><a href="blog.html" class="footer-link">Blog</a><a href="contact.html" class="footer-link">Contact</a></div>
+        <div><h4>Legal</h4><a href="#" class="footer-link">Privacy Policy</a><a href="#" class="footer-link">Terms of Service</a><a href="#" class="footer-link">Security</a></div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 Breach Intel. All rights reserved.</span>
+        <div class="footer-socials"><a href="https://github.com/ParthaMehtaOrg" target="_blank">GitHub</a><a href="https://pypi.org/project/breach-intel/" target="_blank">PyPI</a></div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>

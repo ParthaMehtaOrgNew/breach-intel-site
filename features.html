@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Features — Breach Intel</title>
+  <meta name="description" content="Explore Breach Intel's capabilities: rule-based classification, agentic analysis, hash chain integrity, live dashboard, and more.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand"><span class="icon">🛡️</span> Breach<span class="highlight">Intel</span></a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="blog.html">Blog</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="container">
+      <div class="section-eyebrow"><span class="dot"></span> Capabilities</div>
+      <h1>Built for compliance.<br>Designed for speed.</h1>
+      <p>Every feature exists to answer one question: "What did your AI agent do?"</p>
+    </div>
+  </div>
+
+  <!-- Core Features -->
+  <section>
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> Core Engine</div>
+        <h2 class="section-title">Detection &amp; Classification</h2>
+        <p class="section-sub">Two-tier analysis: instant rule-based detection, plus optional deep analysis for richer context.</p>
+      </div>
+      <div class="grid-2 fade-in">
+        <div class="card">
+          <div class="card-icon orange">🔍</div>
+          <h3>Rule-Based Classifier</h3>
+          <p>Deterministic breach detection in &lt;1ms. No LLM in the critical path. Pattern matching for PII (SSN, Aadhaar, PAN), PHI, card data, financial hallucinations, and 40+ violation types across four verticals.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon purple">🧠</div>
+          <h3>Agentic Deep Analysis</h3>
+          <p>Optional async LangGraph pipeline powered by Claude. A six-node analysis graph adds rationale, regulatory mapping, severity justification, and remediation guidance — without blocking the agent.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrity -->
+  <section class="bg-warm">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> Integrity</div>
+        <h2 class="section-title">Tamper-evident logging</h2>
+        <p class="section-sub">Every record is cryptographically chained. If a single entry is altered, the chain breaks.</p>
+      </div>
+      <div class="grid-3 fade-in">
+        <div class="card">
+          <div class="card-icon green">🔗</div>
+          <h3>SHA-256 Hash Chain</h3>
+          <p>Every breach record is checksummed. Each record includes the hash of the previous record, creating an immutable chain. Integrity scanning runs every 6 hours automatically.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon blue">📝</div>
+          <h3>Immutable Dual-Write</h3>
+          <p>Every breach writes simultaneously to PostgreSQL/SQLite AND real-time JSONL files on disk. Two independent, auditable trails. Ship JSONL to your SIEM.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔒</div>
+          <h3>Tamper Alerts</h3>
+          <p>When the integrity scanner detects a broken hash chain, it creates a tamper_alert record and fires a CRITICAL webhook. You know immediately if someone touched the logs.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Auto-Instrumentation -->
+  <section>
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> Zero-Touch</div>
+        <h2 class="section-title">Auto-instrumentation</h2>
+        <p class="section-sub">Your agent code stays untouched. The policy agent hooks into Python's import system and patches all supported frameworks automatically.</p>
+      </div>
+      <div class="grid-2 fade-in">
+        <div>
+          <div style="margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.4rem;">Supported frameworks</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.6rem;">
+              <span class="tag">OpenAI</span>
+              <span class="tag">Anthropic</span>
+              <span class="tag">LangChain</span>
+              <span class="tag">OpenClaw</span>
+            </div>
+          </div>
+          <div style="margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.4rem;">How it works</h3>
+            <ol style="font-size:0.88rem;color:var(--text-secondary);padding-left:1.2rem;line-height:1.8;">
+              <li><code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">breach-intel install-hook</code> writes a persistent <code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">sitecustomize.py</code></li>
+              <li>When any Python process starts, the hook runs first</li>
+              <li>It checks for <code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">BREACH_INTEL_URL</code> env var</li>
+              <li>If set, patches all detected AI framework methods</li>
+              <li>Agent auto-registers with the policy agent</li>
+              <li>Every LLM response → <code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">POST /events</code> (5s timeout, silent on failure)</li>
+            </ol>
+          </div>
+        </div>
+        <div class="terminal">
+          <div class="terminal-bar">
+            <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
+          </div>
+          <div class="terminal-body">
+<span class="prompt">$</span> <span class="cmd">breach-intel doctor</span>
+<span class="success">✓</span> <span class="output">BREACH_INTEL_URL = http://localhost:8080</span>
+<span class="success">✓</span> <span class="output">Persistent hook installed</span>
+<span class="success">✓</span> <span class="output">Detected frameworks: OpenAI, Anthropic</span>
+<span class="success">✓</span> <span class="output">Server health: OK (v0.3.1)</span>
+<span class="success">✓</span> <span class="output">Credentials: valid</span>
+<span class="output">─────────────────────────────</span>
+<span class="success">All checks passed.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Operations -->
+  <section class="bg-warm">
+    <div class="container">
+      <div class="section-header center fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> Operations</div>
+        <h2 class="section-title">Production-grade infrastructure</h2>
+      </div>
+      <div class="grid-3 fade-in">
+        <div class="card">
+          <div class="card-icon orange">📊</div>
+          <h3>Live Dashboard</h3>
+          <p>Single-file React SPA at /dashboard. Breach counts by severity, agent heatmaps, live feed with click-to-inspect, and vertical distribution.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon red">🚨</div>
+          <h3>Webhook Alerts</h3>
+          <p>CRITICAL breaches fire instantly to Slack, Discord, or generic webhooks. Configure thresholds and routing per vertical and severity.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon blue">🏗️</div>
+          <h3>Auto-Scaling</h3>
+          <p>When event load exceeds 500/min (configurable), additional policy agent instances spawn via Docker, K8s, or subprocess.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon green">🔐</div>
+          <h3>Multi-Tenant Auth</h3>
+          <p>Scoped API keys with tenant isolation. Rate limiting at 300 events/min per key. Admin keys exempt. Full RBAC for compliance teams.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon purple">📈</div>
+          <h3>Prometheus Metrics</h3>
+          <p>Built-in /metrics endpoint for Grafana integration. Track event throughput, breach rates, classifier latency, and spawn counts.</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">🗄️</div>
+          <h3>Retention &amp; Archival</h3>
+          <p>Automated retention policies with integrity scanning every 6 hours. Old records archived with full hash chain verification.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Verticals -->
+  <section>
+    <div class="container">
+      <div class="section-header center fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> Industry Coverage</div>
+        <h2 class="section-title">Purpose-built for regulated industries</h2>
+        <p class="section-sub">Each vertical has its own breach taxonomy mapped to the specific regulations your compliance team cares about.</p>
+      </div>
+      <div class="grid-2 fade-in" style="max-width:900px;margin:0 auto;">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <span style="font-size:1.6rem;">🏦</span>
+            <div>
+              <h3 style="margin-bottom:0;">Fintech</h3>
+              <span style="font-size:0.72rem;color:var(--success);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Production Ready</span>
+            </div>
+          </div>
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.8rem;">12 breach types — PII exposure, card data, cross-tenant leaks, unauthorized financial advice, suspicious transactions, privilege escalation.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            <span class="tag">SOC 2</span><span class="tag">GDPR</span><span class="tag">CCPA</span><span class="tag">PCI-DSS</span><span class="tag">SOX</span><span class="tag">SEBI</span><span class="tag">RBI</span><span class="tag">FINCEN</span>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <span style="font-size:1.6rem;">🏥</span>
+            <div>
+              <h3 style="margin-bottom:0;">Healthcare</h3>
+              <span style="font-size:0.72rem;color:var(--warning);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Beta</span>
+            </div>
+          </div>
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.8rem;">14 breach types — PHI exposure, clinical notes, unauthorized prescriptions, diagnostic hallucinations, minors data, mental health, genomic data.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            <span class="tag">HIPAA</span><span class="tag">42 CFR Part 2</span><span class="tag">GDPR</span><span class="tag">DPDP</span><span class="tag">HL7/FHIR</span>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <span style="font-size:1.6rem;">💊</span>
+            <div>
+              <h3 style="margin-bottom:0;">Pharma</h3>
+              <span style="font-size:0.72rem;color:var(--warning);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Beta</span>
+            </div>
+          </div>
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.8rem;">14 breach types — trial data fabrication, unblinding, 21-CFR-11 audit trail violations, e-signature bypass, pharmacovigilance, GMP violations.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            <span class="tag">FDA 21-CFR-11</span><span class="tag">ICH-E6</span><span class="tag">ICH-Q10</span><span class="tag">EMA</span><span class="tag">GDPR</span>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <span style="font-size:1.6rem;">⚽</span>
+            <div>
+              <h3 style="margin-bottom:0;">Sports</h3>
+              <span style="font-size:0.72rem;color:var(--text-tertiary);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;">Planned</span>
+            </div>
+          </div>
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:0.8rem;">Odds manipulation detection, insider data leaks, athlete PII protection, match-fixing signal analysis.</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.4rem;">
+            <span class="tag">Coming Soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-warm" style="text-align:center;padding:5rem 2rem;">
+    <div class="container-narrow fade-in">
+      <h2 class="section-title">See it in action</h2>
+      <p class="section-sub" style="margin:0.75rem auto 2rem;">Request early access and we'll set up a live demo with your stack.</p>
+      <a href="contact.html" class="btn btn-accent btn-lg">Request Early Access</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><span class="icon">🛡️</span> BreachIntel</div>
+          <p class="footer-desc">Policy agent infrastructure that attaches to any AI agent and produces tamper-evident compliance breach logs — automatically.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <a href="features.html" class="footer-link">Features</a>
+          <a href="pricing.html" class="footer-link">Pricing</a>
+          <a href="https://pypi.org/project/breach-intel/" target="_blank" class="footer-link">PyPI</a>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <a href="about.html" class="footer-link">About</a>
+          <a href="blog.html" class="footer-link">Blog</a>
+          <a href="contact.html" class="footer-link">Contact</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="#" class="footer-link">Privacy Policy</a>
+          <a href="#" class="footer-link">Terms of Service</a>
+          <a href="#" class="footer-link">Security</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 Breach Intel. All rights reserved.</span>
+        <div class="footer-socials">
+          <a href="https://github.com/ParthaMehtaOrg" target="_blank">GitHub</a>
+          <a href="https://pypi.org/project/breach-intel/" target="_blank">PyPI</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
