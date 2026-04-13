@@ -114,12 +114,12 @@
           <div style="margin-bottom:1.5rem;">
             <h3 style="font-size:1rem;font-weight:700;margin-bottom:0.4rem;">How it works</h3>
             <ol style="font-size:0.88rem;color:var(--text-secondary);padding-left:1.2rem;line-height:1.8;">
-              <li><code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">breach-intel install-hook</code> writes a persistent <code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">sitecustomize.py</code></li>
+              <li><code style="background:var(--bg-elevated);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">breach-intel install-hook</code> writes a persistent <code style="background:var(--bg-elevated);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">sitecustomize.py</code></li>
               <li>When any Python process starts, the hook runs first</li>
-              <li>It checks for <code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">BREACH_INTEL_URL</code> env var</li>
+              <li>It checks for <code style="background:var(--bg-elevated);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">BREACH_INTEL_URL</code> env var</li>
               <li>If set, patches all detected AI framework methods</li>
               <li>Agent auto-registers with the policy agent</li>
-              <li>Every LLM response → <code style="background:var(--bg-warm);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">POST /events</code> (5s timeout, silent on failure)</li>
+              <li>Every LLM response → <code style="background:var(--bg-elevated);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">POST /events</code> (5s timeout, silent on failure)</li>
             </ol>
           </div>
         </div>
