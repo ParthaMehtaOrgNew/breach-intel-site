@@ -10,6 +10,261 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .docs-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: calc(100vh - 60px);
+    }
+
+    /* Sidebar */
+    .docs-sidebar {
+      position: sticky;
+      top: 60px;
+      height: calc(100vh - 60px);
+      overflow-y: auto;
+      padding: 2rem 1.5rem 2rem 2rem;
+      border-right: 1px solid var(--border);
+      background: var(--bg);
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .docs-sidebar::-webkit-scrollbar { width: 4px; }
+    .docs-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .sidebar-section {
+      margin-bottom: 1.5rem;
+    }
+    .sidebar-heading {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-tertiary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      padding: 0 0.5rem;
+    }
+    .sidebar-link {
+      display: block;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      border-radius: var(--radius-sm);
+      transition: all 0.15s var(--ease);
+      text-decoration: none;
+      line-height: 1.4;
+    }
+    .sidebar-link:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.04);
+    }
+    .sidebar-link.active {
+      color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    /* Main content */
+    .docs-content {
+      padding: 2.5rem 3rem 4rem;
+      max-width: 800px;
+    }
+    .docs-content h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+    .docs-content > p.lead {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+    .docs-content h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      scroll-margin-top: 80px;
+    }
+    .docs-content h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      scroll-margin-top: 80px;
+    }
+    .docs-content p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+    .docs-content ul, .docs-content ol {
+      padding-left: 1.4rem;
+      margin-bottom: 1rem;
+    }
+    .docs-content li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 0.3rem;
+    }
+
+    /* Code blocks */
+    .code-block {
+      position: relative;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin: 1rem 0 1.5rem;
+      overflow: hidden;
+    }
+    .code-lang {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.75rem;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      font-weight: 600;
+      font-family: var(--font-mono);
+    }
+    .code-block pre {
+      padding: 1.25rem 1.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      overflow-x: auto;
+      margin: 0;
+    }
+    .code-block .prompt { color: var(--success); }
+    .code-block .cmd { color: var(--text); }
+    .code-block .comment { color: var(--text-tertiary); }
+    .code-block .string { color: var(--accent); }
+    .code-block .key { color: var(--info); }
+    .code-block .val { color: var(--accent-light); }
+
+    .copy-btn {
+      position: absolute;
+      top: 0.5rem;
+      right: 3.5rem;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: var(--font-body);
+    }
+    .copy-btn:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    /* Inline code */
+    .docs-content code:not(pre code) {
+      background: var(--bg-elevated);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      color: var(--accent);
+      font-family: var(--font-mono);
+    }
+
+    /* Config table */
+    .config-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0 1.5rem;
+      font-size: 0.85rem;
+    }
+    .config-table th {
+      text-align: left;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-tertiary);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+    }
+    .config-table td {
+      padding: 0.6rem 0.8rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+    .config-table tr:last-child td { border-bottom: none; }
+    .config-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .config-table .key { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text); font-weight: 500; }
+    .config-table .type { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-tertiary); }
+
+    /* Callout */
+    .callout {
+      padding: 1rem 1.2rem;
+      border-radius: var(--radius-sm);
+      margin: 1rem 0 1.5rem;
+      font-size: 0.88rem;
+      line-height: 1.6;
+      border-left: 3px solid;
+    }
+    .callout.tip {
+      background: rgba(34, 197, 94, 0.06);
+      border-color: var(--success);
+      color: var(--text-secondary);
+    }
+    .callout.warn {
+      background: rgba(251, 191, 36, 0.06);
+      border-color: var(--warning);
+      color: var(--text-secondary);
+    }
+    .callout.info {
+      background: rgba(56, 189, 248, 0.06);
+      border-color: var(--info);
+      color: var(--text-secondary);
+    }
+    .callout strong { color: var(--text); }
+
+    /* Method pill */
+    .method {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .method.get { background: rgba(34, 197, 94, 0.12); color: var(--success); }
+    .method.post { background: rgba(56, 189, 248, 0.12); color: var(--info); }
+    .method.delete { background: rgba(248, 113, 113, 0.12); color: var(--danger); }
+    .method::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    @media (max-width: 768px) {
+      .docs-layout { grid-template-columns: 1fr; }
+      .docs-sidebar { display: none; }
+      .docs-content { padding: 2rem 1.25rem; }
+    }
+  </style>
 </head>
 <body>
 
@@ -32,137 +287,325 @@
     </div>
   </nav>
 
-  <div class="page-header">
-    <div class="container">
-      <div class="section-eyebrow"><span class="dot"></span> Documentation</div>
-      <h1>Get started with Breach Intel</h1>
-      <p>Everything you need to install, configure, and run breach detection on your AI agents.</p>
+  <div style="padding-top:60px;">
+    <div class="docs-layout">
+
+      <!-- Sidebar -->
+      <aside class="docs-sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Getting Started</div>
+          <a href="#install" class="sidebar-link active">Installation</a>
+          <a href="#config" class="sidebar-link">Configuration</a>
+          <a href="#hook" class="sidebar-link">Auto-Instrumentation</a>
+          <a href="#doctor" class="sidebar-link">Diagnostics</a>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Core Concepts</div>
+          <a href="#policy-agent" class="sidebar-link">Policy Agent</a>
+          <a href="#classifier" class="sidebar-link">Classifier</a>
+          <a href="#hash-chain" class="sidebar-link">Hash Chain</a>
+          <a href="#agentic" class="sidebar-link">Agentic Analysis</a>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Verticals</div>
+          <a href="#fintech" class="sidebar-link">Fintech</a>
+          <a href="#healthcare" class="sidebar-link">Healthcare</a>
+          <a href="#pharma" class="sidebar-link">Pharma</a>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Operations</div>
+          <a href="#dashboard" class="sidebar-link">Dashboard</a>
+          <a href="#webhooks" class="sidebar-link">Webhooks</a>
+          <a href="#scaling" class="sidebar-link">Auto-Scaling</a>
+          <a href="#auth" class="sidebar-link">Auth &amp; RBAC</a>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-heading">Reference</div>
+          <a href="#api" class="sidebar-link">REST API</a>
+          <a href="#cli" class="sidebar-link">CLI Reference</a>
+          <a href="#env" class="sidebar-link">Environment Variables</a>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="docs-content">
+        <h1>Documentation</h1>
+        <p class="lead">Everything you need to install, configure, and run breach detection on your AI agents.</p>
+
+        <!-- Installation -->
+        <h2 id="install">Installation</h2>
+        <p>Breach Intel can be installed in three ways depending on your setup.</p>
+
+        <h3>Option A: Full Install (Recommended)</h3>
+        <div class="code-block">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="prompt">$</span> <span class="cmd">git clone https://github.com/ParthaMehtaOrg/breach-intel</span>
+<span class="prompt">$</span> <span class="cmd">cd breach-intel</span>
+<span class="prompt">$</span> <span class="cmd">./install.sh</span></pre>
+        </div>
+        <p>The installer checks prerequisites (Python 3.9+, Docker, pip), generates credentials, starts the Docker stack, installs the SDK, and sets up auto-instrumentation.</p>
+
+        <h3>Option B: SDK Only (No Docker)</h3>
+        <div class="code-block">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="prompt">$</span> <span class="cmd">pip install breach-intel-client</span>
+<span class="prompt">$</span> <span class="cmd">breach-intel install-hook</span></pre>
+        </div>
+
+        <h3>Option C: Manual Setup</h3>
+        <div class="code-block">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="prompt">$</span> <span class="cmd">docker compose up --build</span>
+<span class="prompt">$</span> <span class="cmd">pip install -e sdk/</span>
+<span class="prompt">$</span> <span class="cmd">breach-intel install-hook</span>
+<span class="prompt">$</span> <span class="cmd">export BREACH_INTEL_URL=http://localhost:8080</span>
+<span class="prompt">$</span> <span class="cmd">export BREACH_INTEL_TOKEN=&lt;your-api-key&gt;</span></pre>
+        </div>
+
+        <div class="callout tip"><strong>Tip:</strong> After installation, run <code>breach-intel doctor</code> to verify everything is set up correctly.</div>
+
+        <!-- Configuration -->
+        <h2 id="config">Configuration</h2>
+        <p>Breach Intel is configured via environment variables or <code>config.yaml</code>.</p>
+
+        <table class="config-table">
+          <thead><tr><th>Variable</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="key">BREACH_INTEL_URL</td><td class="type">string</td><td>Policy agent URL (e.g. http://localhost:8080)</td></tr>
+            <tr><td class="key">BREACH_INTEL_TOKEN</td><td class="type">string</td><td>Agent-scoped API key for authentication</td></tr>
+            <tr><td class="key">BREACH_INTEL_LICENSE_KEY</td><td class="type">string</td><td>Pro/Enterprise license key (optional)</td></tr>
+            <tr><td class="key">BREACH_INTEL_DB_URL</td><td class="type">string</td><td>Database URL (default: SQLite, Pro: PostgreSQL)</td></tr>
+            <tr><td class="key">BREACH_INTEL_RATE_LIMIT</td><td class="type">int</td><td>Events per minute per key (default: 300)</td></tr>
+            <tr><td class="key">BREACH_INTEL_WEBHOOK_URL</td><td class="type">string</td><td>Webhook endpoint for CRITICAL breach alerts</td></tr>
+            <tr><td class="key">BREACH_INTEL_WEBHOOK_TYPE</td><td class="type">string</td><td>slack | discord | generic (default: generic)</td></tr>
+            <tr><td class="key">BREACH_INTEL_SPAWN_THRESHOLD</td><td class="type">int</td><td>Events/min before auto-scaling (default: 500)</td></tr>
+            <tr><td class="key">ANTHROPIC_API_KEY</td><td class="type">string</td><td>For agentic deep analysis (Pro only)</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Auto-Instrumentation -->
+        <h2 id="hook">Auto-Instrumentation</h2>
+        <p>Breach Intel uses Python's <code>sitecustomize.py</code> mechanism to auto-patch AI frameworks at import time. No code changes required.</p>
+
+        <h3>How it works</h3>
+        <ol>
+          <li><code>breach-intel install-hook</code> writes a persistent <code>sitecustomize.py</code> to your Python site-packages</li>
+          <li>When any Python process starts, the hook runs first</li>
+          <li>It checks for the <code>BREACH_INTEL_URL</code> environment variable</li>
+          <li>If set, it patches all detected AI framework methods</li>
+          <li>The agent auto-registers with the policy agent</li>
+          <li>Every LLM response is sent to <code>POST /events</code> (5s timeout, silent on failure)</li>
+        </ol>
+
+        <h3>Supported frameworks</h3>
+        <table class="config-table">
+          <thead><tr><th>Framework</th><th>Patched Method</th></tr></thead>
+          <tbody>
+            <tr><td class="key">OpenAI</td><td><code>chat.completions.create</code></td></tr>
+            <tr><td class="key">Anthropic</td><td><code>messages.create</code> / <code>AsyncMessages.create</code></td></tr>
+            <tr><td class="key">LangChain</td><td><code>BaseChatModel.invoke</code> / <code>ainvoke</code></td></tr>
+            <tr><td class="key">OpenClaw</td><td>fs.watch on <code>transcript.jsonl</code> (passive)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout info"><strong>Note:</strong> If <code>BREACH_INTEL_URL</code> is not set, the hook exits silently with zero overhead. Your agents are unaffected.</div>
+
+        <!-- Diagnostics -->
+        <h2 id="doctor">Diagnostics</h2>
+        <p>Run <code>breach-intel doctor</code> to verify your installation.</p>
+        <div class="code-block">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="prompt">$</span> <span class="cmd">breach-intel doctor</span>
+<span class="comment">✓ BREACH_INTEL_URL = http://localhost:8080</span>
+<span class="comment">✓ Persistent hook installed</span>
+<span class="comment">✓ Detected frameworks: OpenAI, Anthropic</span>
+<span class="comment">✓ Server health: OK (v0.3.1)</span>
+<span class="comment">✓ Credentials: valid</span>
+<span class="comment">─────────────────────────────</span>
+<span class="comment">All checks passed.</span></pre>
+        </div>
+
+        <!-- Policy Agent -->
+        <h2 id="policy-agent">Policy Agent</h2>
+        <p>The policy agent is a FastAPI server that receives events from instrumented agents, classifies them, and logs breaches.</p>
+        <h3>Request flow</h3>
+        <ol>
+          <li>Auth + rate limit check (scoped API keys, 300/min default)</li>
+          <li>Auto-registration (if first event from an unknown agent)</li>
+          <li>Payload sanitization (normalize, strip noise)</li>
+          <li>Deterministic classification (rule-based, &lt;1ms)</li>
+          <li>If breach: insert into DB, append to JSONL, fire webhook</li>
+          <li>Trigger agentic analysis (async, non-blocking, Pro only)</li>
+          <li>Return immediately to caller</li>
+        </ol>
+
+        <div class="callout tip"><strong>Key guarantee:</strong> The policy agent never blocks your AI agent. Events are processed asynchronously with a 5-second timeout on the SDK side.</div>
+
+        <!-- Classifier -->
+        <h2 id="classifier">Classifier</h2>
+        <p>The rule-based classifier detects breaches in under 1ms using pattern matching. No LLM is in the critical path.</p>
+        <p>It checks for PII patterns (SSN, Aadhaar, PAN, email, DOB), card data (Visa/MC/Amex, CVV), PHI markers, financial hallucination patterns, and 40+ other violation types across all verticals.</p>
+
+        <!-- Hash Chain -->
+        <h2 id="hash-chain">Hash Chain</h2>
+        <p>Every breach record is SHA-256 checksummed. Each record includes the hash of the previous record, forming an immutable chain.</p>
+        <div class="code-block">
+          <span class="code-lang">json</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre>{
+  <span class="key">"id"</span>: <span class="string">"br_00042"</span>,
+  <span class="key">"breach_type"</span>: <span class="string">"PII_EXPOSURE"</span>,
+  <span class="key">"severity"</span>: <span class="string">"CRITICAL"</span>,
+  <span class="key">"prev_hash"</span>: <span class="string">"a3f8c1d9..."</span>,
+  <span class="key">"record_hash"</span>: <span class="string">"7b2e4f8a..."</span>,
+  <span class="key">"timestamp"</span>: <span class="string">"2026-03-28T14:22:01Z"</span>
+}</pre>
+        </div>
+        <p>Integrity scanning runs every 6 hours. If a single record is tampered with, the chain breaks and a <code>tamper_alert</code> is created.</p>
+
+        <!-- Agentic Analysis -->
+        <h2 id="agentic">Agentic Analysis</h2>
+        <p>Pro feature. An async LangGraph pipeline powered by Claude adds context to detected breaches.</p>
+        <p>The six-node graph provides: severity justification, regulatory mapping, remediation guidance, rationale extraction, context enrichment, and final assessment. This runs in the background and never blocks the agent or the classifier.</p>
+
+        <!-- Verticals -->
+        <h2 id="fintech">Fintech</h2>
+        <p>12 breach types. Production ready.</p>
+        <p>Covers: PII_EXPOSURE, CARD_DATA_EXPOSURE, CROSS_TENANT_LEAK, DATA_EXFILTRATION, SUSPICIOUS_TRANSACTION, UNAUTHORIZED_ACCESS, PRIVILEGE_ESCALATION, REGULATORY_VIOLATION, HALLUCINATION_FINANCIAL, AUDIT_TRAIL_MISSING, SCOPE_CREEP, UNAPPROVED_EXTERNAL_CALL.</p>
+        <p>Regulations: SOC 2, GDPR, CCPA, PCI-DSS, SOX, SEBI, RBI, FINCEN.</p>
+
+        <h2 id="healthcare">Healthcare</h2>
+        <p>14 breach types. Beta.</p>
+        <p>Covers: PHI_EXPOSURE, CLINICAL_NOTE_LEAK, UNAUTHORIZED_PRESCRIPTION_ACTION, DIAGNOSTIC_HALLUCINATION, MINORS_DATA_EXPOSURE, MENTAL_HEALTH_DISCLOSURE, HIV_STATUS_DISCLOSURE, GENOMIC_DATA_EXPOSURE, INSURANCE_DATA_LEAK, CROSS_PATIENT_LEAK, and more.</p>
+        <p>Regulations: HIPAA, 42 CFR Part 2, GDPR, DPDP, HL7/FHIR.</p>
+
+        <h2 id="pharma">Pharma</h2>
+        <p>14 breach types. Beta.</p>
+        <p>Covers: TRIAL_DATA_FABRICATION, UNBLINDING_BREACH, AUDIT_TRAIL_VIOLATION_21CFR11, ESIGNATURE_BYPASS, REGULATORY_SUBMISSION_VIOLATION, PHARMACOVIGILANCE_BREACH, GMP_VIOLATION, and more.</p>
+        <p>Regulations: FDA 21-CFR Part 11, 21-CFR Part 312, ICH-E6 (GCP), ICH-Q10 (GMP), EMA, GDPR.</p>
+
+        <!-- Dashboard -->
+        <h2 id="dashboard">Dashboard</h2>
+        <p>A single-file React SPA served at <code>/dashboard/</code>. Access it with your agent token:</p>
+        <div class="code-block">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="prompt">$</span> <span class="cmd">open "http://localhost:8080/dashboard/?token=$(cat ~/.breach-intel/agent_token)"</span></pre>
+        </div>
+        <p>Features: breach counts by severity, agent heatmaps, live breach feed (last 50), click-to-inspect detail view with full payload, vertical distribution chart, and instance info.</p>
+        <div class="callout info"><strong>Note:</strong> The <code>?token=</code> param is auto-saved to localStorage and stripped from the URL bar. If the token expires, the Configure panel opens automatically.</div>
+
+        <!-- Webhooks -->
+        <h2 id="webhooks">Webhooks</h2>
+        <p>CRITICAL breaches fire webhooks instantly. Configure via environment variables:</p>
+        <div class="code-block">
+          <span class="code-lang">bash</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><span class="prompt">$</span> <span class="cmd">export BREACH_INTEL_WEBHOOK_URL=https://hooks.slack.com/services/T.../B.../xxx</span>
+<span class="prompt">$</span> <span class="cmd">export BREACH_INTEL_WEBHOOK_TYPE=slack</span></pre>
+        </div>
+        <p>Supported types: <code>slack</code>, <code>discord</code>, <code>generic</code> (POST JSON to any URL).</p>
+
+        <!-- Auto-Scaling -->
+        <h2 id="scaling">Auto-Scaling</h2>
+        <p>When event load exceeds the spawn threshold (default: 500 events/min), the policy agent spawns additional instances via Docker, K8s, or subprocess. Configure with <code>BREACH_INTEL_SPAWN_THRESHOLD</code>.</p>
+
+        <!-- Auth -->
+        <h2 id="auth">Auth &amp; RBAC</h2>
+        <p>Multi-tenant API key system with scoped permissions. Each agent gets its own key. Admin keys are rate-limit exempt. Keys are generated during installation or via the API.</p>
+
+        <!-- REST API -->
+        <h2 id="api">REST API</h2>
+
+        <h3><span class="method post">POST</span> <code>/events</code></h3>
+        <p>Submit an agent event for classification. Returns breach result if detected.</p>
+
+        <h3><span class="method get">GET</span> <code>/breaches</code></h3>
+        <p>List breach records. Supports filtering by agent, severity, type, and date range.</p>
+
+        <h3><span class="method get">GET</span> <code>/agents</code></h3>
+        <p>List registered agents with their framework info and breach counts.</p>
+
+        <h3><span class="method get">GET</span> <code>/health</code></h3>
+        <p>Server health check. Returns version, uptime, and registered agent count.</p>
+
+        <h3><span class="method get">GET</span> <code>/metrics</code></h3>
+        <p>Prometheus-compatible metrics endpoint for Grafana integration.</p>
+
+        <h3><span class="method get">GET</span> <code>/dashboard/</code></h3>
+        <p>Serves the single-file React dashboard SPA.</p>
+
+        <!-- CLI -->
+        <h2 id="cli">CLI Reference</h2>
+        <table class="config-table">
+          <thead><tr><th>Command</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="key">breach-intel install-hook</td><td>Install persistent sitecustomize.py hook</td></tr>
+            <tr><td class="key">breach-intel doctor</td><td>Run diagnostics — env vars, hook, frameworks, server health</td></tr>
+            <tr><td class="key">breach-intel status</td><td>Show policy agent status, agents, and breach counts</td></tr>
+            <tr><td class="key">breach-intel run</td><td>Start the policy agent server</td></tr>
+            <tr><td class="key">breach-intel version</td><td>Print SDK and policy agent version</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Environment Variables -->
+        <h2 id="env">Environment Variables</h2>
+        <p>All environment variables are prefixed with <code>BREACH_INTEL_</code> except for external service keys. See the <a href="#config" style="color:var(--accent);">Configuration section</a> for the full reference table.</p>
+
+        <div class="callout warn"><strong>Security:</strong> Never commit API keys or tokens to version control. Use <code>~/.breach-intel/</code> for local credential storage or inject via environment variables in CI/CD.</div>
+
+      </main>
     </div>
   </div>
 
-  <!-- Quick Start -->
-  <section>
+  <!-- No footer on docs page to match SuperFastClaw style -->
+  <footer class="footer" style="margin-top:0;">
     <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-eyebrow"><span class="dot"></span> Quick Start</div>
-        <h2 class="section-title">Up and running in 3 commands</h2>
-      </div>
-      <div class="terminal fade-in" style="max-width:700px;">
-        <div class="terminal-bar">
-          <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
-        </div>
-        <div class="terminal-body">
-<span class="output"># 1. Install the SDK</span>
-<span class="prompt">$</span> <span class="cmd">pip install breach-intel-client</span>
-
-<span class="output"># 2. Install the persistent hook</span>
-<span class="prompt">$</span> <span class="cmd">breach-intel install-hook</span>
-
-<span class="output"># 3. Set your policy agent URL and run</span>
-<span class="prompt">$</span> <span class="cmd">export BREACH_INTEL_URL=http://localhost:8080</span>
-<span class="prompt">$</span> <span class="cmd">python my_agent.py</span>
-<span class="success">✓ Agent auto-registered. Breach detection active.</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Sections -->
-  <section class="bg-warm">
-    <div class="container">
-      <div class="section-header center fade-in">
-        <h2 class="section-title">Documentation</h2>
-        <p class="section-sub">Choose a section to dive deeper.</p>
-      </div>
-      <div class="grid-3 fade-in">
-        <div class="card" style="padding:2rem;">
-          <div class="card-icon orange">📦</div>
-          <h3>Installation</h3>
-          <p>Full install via Docker, manual setup, SDK-only mode, and verifying your setup with <code style="background:var(--bg-elevated);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">breach-intel doctor</code>.</p>
-        </div>
-        <div class="card" style="padding:2rem;">
-          <div class="card-icon blue">⚙️</div>
-          <h3>Configuration</h3>
-          <p>Environment variables, config.yaml options, rate limiting, webhook setup, and multi-tenant API key management.</p>
-        </div>
-        <div class="card" style="padding:2rem;">
-          <div class="card-icon green">🔌</div>
-          <h3>Auto-Instrumentation</h3>
-          <p>How sitecustomize.py works, supported frameworks (OpenAI, Anthropic, LangChain, OpenClaw), and troubleshooting.</p>
-        </div>
-        <div class="card" style="padding:2rem;">
-          <div class="card-icon purple">📊</div>
-          <h3>Dashboard</h3>
-          <p>Accessing the dashboard, authentication tokens, breach detail views, and agent heatmaps.</p>
-        </div>
-        <div class="card" style="padding:2rem;">
-          <div class="card-icon red">🏷️</div>
-          <h3>Breach Taxonomy</h3>
-          <p>Full list of 40+ breach types across Fintech, Healthcare, Pharma, and Sports verticals with severity levels.</p>
-        </div>
-        <div class="card" style="padding:2rem;">
-          <div class="card-icon">🔗</div>
-          <h3>API Reference</h3>
-          <p>REST endpoints: POST /events, GET /breaches, GET /agents, GET /health, and webhook configuration.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CLI Reference -->
-  <section>
-    <div class="container">
-      <div class="section-header fade-in">
-        <div class="section-eyebrow"><span class="dot"></span> CLI</div>
-        <h2 class="section-title">CLI commands</h2>
-      </div>
-      <div class="table-wrap fade-in">
-        <table>
-          <thead>
-            <tr>
-              <th>Command</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td><code style="color:var(--accent);">breach-intel install-hook</code></td><td>Install persistent sitecustomize.py hook for auto-instrumentation</td></tr>
-            <tr><td><code style="color:var(--accent);">breach-intel doctor</code></td><td>Run diagnostics — check env vars, hook status, frameworks, server health</td></tr>
-            <tr><td><code style="color:var(--accent);">breach-intel status</code></td><td>Show policy agent status, registered agents, and breach counts</td></tr>
-            <tr><td><code style="color:var(--accent);">breach-intel run</code></td><td>Start the policy agent server</td></tr>
-            <tr><td><code style="color:var(--accent);">breach-intel version</code></td><td>Print SDK and policy agent version</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="bg-warm" style="text-align:center;padding:5rem 2rem;">
-    <div class="container-narrow fade-in">
-      <h2 class="section-title">Need help?</h2>
-      <p class="section-sub" style="margin:0.75rem auto 2rem;">Can't find what you're looking for? Reach out and we'll help you get set up.</p>
-      <a href="contact.html" class="btn btn-accent btn-lg">Contact Support</a>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-brand"><span class="icon">🛡️</span> BreachIntel</div>
-          <p class="footer-desc">Policy agent infrastructure that attaches to any AI agent and produces tamper-evident compliance breach logs — automatically.</p>
-        </div>
-        <div><h4>Product</h4><a href="features.html" class="footer-link">Features</a><a href="pricing.html" class="footer-link">Pricing</a><a href="docs.html" class="footer-link">Docs</a><a href="https://pypi.org/project/breach-intel-client/" target="_blank" class="footer-link">PyPI</a></div>
-        <div><h4>Company</h4><a href="about.html" class="footer-link">About</a><a href="blog.html" class="footer-link">Blog</a><a href="contact.html" class="footer-link">Contact</a></div>
-        <div><h4>Legal</h4><a href="#" class="footer-link">Privacy Policy</a><a href="#" class="footer-link">Terms of Service</a><a href="#" class="footer-link">Security</a></div>
-      </div>
-      <div class="footer-bottom">
+      <div class="footer-bottom" style="border-top:none;padding-top:0;">
         <span class="footer-copy">&copy; 2026 Breach Intel. All rights reserved.</span>
-        <div class="footer-socials"><a href="https://github.com/ParthaMehtaOrg" target="_blank">GitHub</a><a href="https://pypi.org/project/breach-intel-client/" target="_blank">PyPI</a></div>
+        <div class="footer-socials">
+          <a href="index.html">Home</a>
+          <a href="features.html">Features</a>
+          <a href="pricing.html">Pricing</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="https://github.com/ParthaMehtaOrg" target="_blank">GitHub</a>
+        </div>
       </div>
     </div>
   </footer>
+
   <script src="js/main.js"></script>
+  <script>
+    // Copy button
+    function copyCode(btn) {
+      const pre = btn.parentElement.querySelector('pre');
+      const text = pre.innerText.replace(/^\$ /gm, '');
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 1500);
+      });
+    }
+
+    // Scroll spy for sidebar
+    const sections = document.querySelectorAll('.docs-content h2[id]');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    const spyObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          sidebarLinks.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.sidebar-link[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+    sections.forEach(s => spyObserver.observe(s));
+  </script>
 </body>
 </html>
