@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docs — Breach Intel</title>
+  <meta name="description" content="Breach Intel documentation — installation, configuration, API reference, and guides.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-brand"><span class="icon">🛡️</span> Breach<span class="highlight">Intel</span></a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+      <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="docs.html">Docs</a>
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="blog.html">Blog</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="contact.html" class="nav-cta">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="container">
+      <div class="section-eyebrow"><span class="dot"></span> Documentation</div>
+      <h1>Get started with Breach Intel</h1>
+      <p>Everything you need to install, configure, and run breach detection on your AI agents.</p>
+    </div>
+  </div>
+
+  <!-- Quick Start -->
+  <section>
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> Quick Start</div>
+        <h2 class="section-title">Up and running in 3 commands</h2>
+      </div>
+      <div class="terminal fade-in" style="max-width:700px;">
+        <div class="terminal-bar">
+          <span class="terminal-dot r"></span><span class="terminal-dot y"></span><span class="terminal-dot g"></span>
+        </div>
+        <div class="terminal-body">
+<span class="output"># 1. Install the SDK</span>
+<span class="prompt">$</span> <span class="cmd">pip install breach-intel-client</span>
+
+<span class="output"># 2. Install the persistent hook</span>
+<span class="prompt">$</span> <span class="cmd">breach-intel install-hook</span>
+
+<span class="output"># 3. Set your policy agent URL and run</span>
+<span class="prompt">$</span> <span class="cmd">export BREACH_INTEL_URL=http://localhost:8080</span>
+<span class="prompt">$</span> <span class="cmd">python my_agent.py</span>
+<span class="success">✓ Agent auto-registered. Breach detection active.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sections -->
+  <section class="bg-warm">
+    <div class="container">
+      <div class="section-header center fade-in">
+        <h2 class="section-title">Documentation</h2>
+        <p class="section-sub">Choose a section to dive deeper.</p>
+      </div>
+      <div class="grid-3 fade-in">
+        <div class="card" style="padding:2rem;">
+          <div class="card-icon orange">📦</div>
+          <h3>Installation</h3>
+          <p>Full install via Docker, manual setup, SDK-only mode, and verifying your setup with <code style="background:var(--bg-elevated);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem;">breach-intel doctor</code>.</p>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <div class="card-icon blue">⚙️</div>
+          <h3>Configuration</h3>
+          <p>Environment variables, config.yaml options, rate limiting, webhook setup, and multi-tenant API key management.</p>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <div class="card-icon green">🔌</div>
+          <h3>Auto-Instrumentation</h3>
+          <p>How sitecustomize.py works, supported frameworks (OpenAI, Anthropic, LangChain, OpenClaw), and troubleshooting.</p>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <div class="card-icon purple">📊</div>
+          <h3>Dashboard</h3>
+          <p>Accessing the dashboard, authentication tokens, breach detail views, and agent heatmaps.</p>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <div class="card-icon red">🏷️</div>
+          <h3>Breach Taxonomy</h3>
+          <p>Full list of 40+ breach types across Fintech, Healthcare, Pharma, and Sports verticals with severity levels.</p>
+        </div>
+        <div class="card" style="padding:2rem;">
+          <div class="card-icon">🔗</div>
+          <h3>API Reference</h3>
+          <p>REST endpoints: POST /events, GET /breaches, GET /agents, GET /health, and webhook configuration.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLI Reference -->
+  <section>
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="section-eyebrow"><span class="dot"></span> CLI</div>
+        <h2 class="section-title">CLI commands</h2>
+      </div>
+      <div class="table-wrap fade-in">
+        <table>
+          <thead>
+            <tr>
+              <th>Command</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><code style="color:var(--accent);">breach-intel install-hook</code></td><td>Install persistent sitecustomize.py hook for auto-instrumentation</td></tr>
+            <tr><td><code style="color:var(--accent);">breach-intel doctor</code></td><td>Run diagnostics — check env vars, hook status, frameworks, server health</td></tr>
+            <tr><td><code style="color:var(--accent);">breach-intel status</code></td><td>Show policy agent status, registered agents, and breach counts</td></tr>
+            <tr><td><code style="color:var(--accent);">breach-intel run</code></td><td>Start the policy agent server</td></tr>
+            <tr><td><code style="color:var(--accent);">breach-intel version</code></td><td>Print SDK and policy agent version</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="bg-warm" style="text-align:center;padding:5rem 2rem;">
+    <div class="container-narrow fade-in">
+      <h2 class="section-title">Need help?</h2>
+      <p class="section-sub" style="margin:0.75rem auto 2rem;">Can't find what you're looking for? Reach out and we'll help you get set up.</p>
+      <a href="contact.html" class="btn btn-accent btn-lg">Contact Support</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><span class="icon">🛡️</span> BreachIntel</div>
+          <p class="footer-desc">Policy agent infrastructure that attaches to any AI agent and produces tamper-evident compliance breach logs — automatically.</p>
+        </div>
+        <div><h4>Product</h4><a href="features.html" class="footer-link">Features</a><a href="pricing.html" class="footer-link">Pricing</a><a href="docs.html" class="footer-link">Docs</a><a href="https://pypi.org/project/breach-intel-client/" target="_blank" class="footer-link">PyPI</a></div>
+        <div><h4>Company</h4><a href="about.html" class="footer-link">About</a><a href="blog.html" class="footer-link">Blog</a><a href="contact.html" class="footer-link">Contact</a></div>
+        <div><h4>Legal</h4><a href="#" class="footer-link">Privacy Policy</a><a href="#" class="footer-link">Terms of Service</a><a href="#" class="footer-link">Security</a></div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">&copy; 2026 Breach Intel. All rights reserved.</span>
+        <div class="footer-socials"><a href="https://github.com/ParthaMehtaOrg" target="_blank">GitHub</a><a href="https://pypi.org/project/breach-intel-client/" target="_blank">PyPI</a></div>
+      </div>
+    </div>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>
