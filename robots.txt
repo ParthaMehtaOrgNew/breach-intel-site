@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://secure-mind-live.github.io/breach-intel-site/sitemap.xml
